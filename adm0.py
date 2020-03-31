@@ -11,6 +11,7 @@ GADM_YEMEN_ADDRESS = 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gp
 GADM_YEMEN_FILENAME = 'gadm36_YEM.gpkg'
 HDX_YEMEN_ADDRESS = 'yemen-admin-boundaries'
 HDX_YEMEN_FILENAME = 'yem_adm_govyem_cso_ochayemen_20191002_GPKG.zip'
+CRS = 'EPSG:3395'
 
 
 def main(debug=False):
@@ -27,3 +28,6 @@ def main(debug=False):
     # Open them and compare
     df_hdx = gpd.read_file(f'zip://{filepath_hdx}')
     df_gadm = gpd.read_file(f'zip://{filepath_gadm}!{GADM_YEMEN_FILENAME}')
+    # Change CRS
+    df_hdx = df_hdx.to_crs(CRS)
+    df_gadm = df_gadm.to_crs(CRS)
