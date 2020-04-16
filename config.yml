@@ -1,0 +1,10 @@
+dirs:
+  raw_data: 'raw_data'
+  processed_data: 'processed_data'
+adm0:
+  gadm:
+    raw: 'gadm_adm0.zip'
+    processed: 'yem_admn_ad0_py_s0_gadm_pp.shp'
+  cod:
+    raw: 'cod_adm0.zip'
+    processed: 'yem_admn_ad0_py_s0_unocha_pp.shp'
