@@ -10,8 +10,9 @@ setuptools.setup(
     install_requires=[],
     entry_points={
         'console_scripts': [
-            'extract_adm0_cod=extract.cod:get_adm0',
-            'extract_adm0_gadm=extract.gadm:get_adm0',
+            'extract_adm0_cod=extract.cod:get_adm0_snakemake',
+            'transform_adm0_cod=transform.adm0:transform_cod',
+            'transform_adm0_gadm=transform.adm0:transform_gadm',
         ]
     }
 )
