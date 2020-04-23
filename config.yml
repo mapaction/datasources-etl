@@ -1,7 +1,9 @@
 dirs:
   raw_data: 'raw_data'
   processed_data: 'processed_data'
+  schemas: 'schemas'
 adm0:
+  schema: 'admin0_affected_area_py.yml'
   gadm:
     raw: 'gadm_adm0.zip'
     processed: 'yem_admn_ad0_py_s0_gadm_pp.shp'

@@ -1,0 +1,9 @@
+properties:
+    name_en: 
+        type: string 
+    geometry_type:
+        enum: 
+            - MultiPolygon
+            - Polygon
+    crs:
+        cosnt: EPGS:2090 
