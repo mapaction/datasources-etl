@@ -1,9 +1,14 @@
+required:
+    - name_en
 properties:
-    name_en: 
-        type: string 
     geometry_type:
-        enum: 
-            - MultiPolygon
-            - Polygon
+        items:
+            enum:
+                - MultiPolygon
+                - Polygon
+        additionalItems: false
     crs:
-        cosnt: EPGS:2090 
+        items:
+            enum:
+                - EPSG:2090
+        additionalItems: false

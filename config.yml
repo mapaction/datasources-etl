@@ -1,13 +1,16 @@
 dirs:
-  raw_data: 'raw_data'
-  processed_data: 'processed_data'
-  schemas: 'schemas'
+  raw_data: raw_data
+  processed_data: processed_data
+  schemas: schemas
+constants:
+  ISO3: YEM
+  crs: EPSG:2090
 adm0:
-  schema: 'admin0_affected_area_py.yml'
+  schema: admin0_affected_area_py.yml
   gadm:
-    raw: 'gadm_adm0.zip'
-    processed: 'yem_admn_ad0_py_s0_gadm_pp.shp'
+    raw: gadm_adm0.zip
+    processed: yem_admn_ad0_py_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
   cod:
-    raw: 'cod_adm0.zip'
-    processed: 'yem_admn_ad0_py_s0_unocha_pp.shp'
+    raw: cod_adm0.zip
+    processed: yem_admn_ad0_py_s0_unocha_pp.shp

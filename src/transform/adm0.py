@@ -5,9 +5,8 @@ from jsonschema import validate
 
 from utils.yaml_api import parse_yaml
 
-CRS = 'EPSG:2090'
-GADM_YEMEN_FILENAME = 'gadm36_YEM.gpkg'
-GADM_LAYER = 'gadm36_YEM_0'
+GADM_FILENAME = 'gadm36_{ISO3}.gpkg'
+GADM_LAYER = 'gadm36_{ISO3}_0'
 
 
 def transform_cod():
@@ -22,18 +21,20 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     """
     :param source: "cod" or "gadm"
     """
+    config = parse_yaml('config.yml')
     if source == "cod":
         df_adm0 = gpd.read_file(f'zip://{input_filename}')
         schema_mapping = {
             'admin10Name': 'name_en'
         }
     elif source == "gadm":
-        df_adm0 = gpd.read_file(f'zip://{input_filename}!{GADM_YEMEN_FILENAME}', layer=GADM_LAYER)
+        df_adm0 = gpd.read_file(f'zip://{input_filename}!{GADM_FILENAME.format(ISO3=config["constants"]["ISO3"])}',
+                                layer=GADM_LAYER.format(ISO3=config['constants']['ISO3']))
         schema_mapping = {
             'NAME_0': 'name_en'
         }
     # Change CRS
-    df_adm0 = df_adm0.to_crs(CRS)
+    df_adm0 = df_adm0.to_crs(config['constants']['crs'])
     # Modify the column names to suit the schema
     df_adm0 = df_adm0.rename(columns=schema_mapping)
     # Make columns needed for validation
