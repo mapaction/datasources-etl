@@ -23,7 +23,8 @@ rule extract_adm0_gadm:
 
 rule transform_adm0_cod:
     input:
-        os.path.join(config['dirs']['raw_data'], config['adm0']['cod']['raw'])
+        os.path.join(config['dirs']['raw_data'], config['adm0']['cod']['raw']),
+        os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
         os.path.join(config['dirs']['processed_data'], config['adm0']['cod']['processed'])
     shell:
@@ -32,7 +33,8 @@ rule transform_adm0_cod:
 
 rule transform_adm0_gadm:
     input:
-        os.path.join(config['dirs']['raw_data'], config['adm0']['gadm']['raw'])
+        os.path.join(config['dirs']['raw_data'], config['adm0']['gadm']['raw']),
+        os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
         os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed'])
     shell:
