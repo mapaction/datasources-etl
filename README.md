@@ -21,7 +21,7 @@ activate datasources-etl
 ```
 * Install the requirements:
 ```
-conda install --file requirements.txt
+conda install -c conda-forge -c bioconda --file requirements.txt
 ```
 * Some packages are not available through conda. Install them using pip:
 ```

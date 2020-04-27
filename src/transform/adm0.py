@@ -25,7 +25,7 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     if source == "cod":
         df_adm0 = gpd.read_file(f'zip://{input_filename}')
         schema_mapping = {
-            'admin10Name': 'name_en'
+            'admin0Name_en': 'name_en'
         }
     elif source == "gadm":
         df_adm0 = gpd.read_file(f'zip://{input_filename}!{GADM_FILENAME.format(ISO3=config["constants"]["ISO3"])}',
