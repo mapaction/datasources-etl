@@ -1,6 +1,6 @@
 numpy==1.18.1
 pandas==1.0.3
 geopandas==0.6.1
-snakemake==5.13.0
+snakemake-minimal==5.13.0
 requests==2.23.0
 PyYAML==5.3.1
