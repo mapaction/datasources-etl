@@ -200,8 +200,6 @@ def get_neighbour_countries(gdf_source, gdf_A0=None, NAME_0=None, GID_0=None):
     print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     # 
 #    gdf_n_check.remove(<country_aoi>)
-    print('Neighbours:\n{0}'.format(gdf_n_check['NAME_0'].unique().tolist()))
-
     return gdf_n_check['NAME_0'].unique().tolist()
 
 
@@ -211,10 +209,12 @@ def get_neighbour_countries(gdf_source, gdf_A0=None, NAME_0=None, GID_0=None):
 def write_to_gpkg(gdf_aoi_levels, version, aoi_dir, country_aoi, neigh=None):
     for level, gdf_level in gdf_aoi_levels.items():
         gpkg = '{0}.gpkg'.format(os.path.join(aoi_dir, country_aoi))
-        if not neigh:
-            layer = 'gadm{0}_{1}_{2}'.format(version, country_aoi, level)
-        else:
+        # Will need to make the folder if it's not present so will need write.
+        if not os.path.exists(aoi_dir): os.makedirs(aoi_dir)
+        if neigh: 
             layer = 'gadm{0}_{1}_{2}'.format(version, neigh, level)
+        else:
+            layer = 'gadm{0}_{1}_{2}'.format(version, country_aoi, level)
         gdf_level.to_file(gpkg, layer=layer, driver="GPKG")
         print('Writing {0} to {1}'.format(layer, gpkg))
 
@@ -223,7 +223,8 @@ def write_to_gpkg(gdf_aoi_levels, version, aoi_dir, country_aoi, neigh=None):
 def main():
     # Assume that the supplier/format/local holding  will be in a config file
     # but for now:
-    country_aoi = 'Yemen'
+#    country_aoi = 'Yemen'
+    country_aoi = 'Oman'
     supplier = r'GADM'
     source_format = r'geopackage'
     ma_holding = r'J:\05_OpenData\GADM\gadm36_gpkg.zip'
@@ -281,8 +282,11 @@ def main():
         # Process each surrounding country
         for neighbour in neighbours:
             gdf_aoi_levels = get_country_admin_levels(gdf, neighbour)
-            # Add to same geopackage
-            write_to_gpkg(gdf_aoi_levels, version, aoi_dir, neighbour)
+            # Write to different geopackage
+#            write_to_gpkg(gdf_aoi_levels, version, aoi_dir, neighbour)
+            # Can add to the same geopackage
+            write_to_gpkg(gdf_aoi_levels, version, aoi_dir,
+                    country_aoi, neigh=neighbour)
 
     print('Done.')
 
