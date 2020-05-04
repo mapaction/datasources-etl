@@ -1,11 +1,5 @@
 #############################################################################
-# Check and download the GADM world geopackage and extract a country.
-# Does not use a config file, though the expectation is that there would be
-# one available. Hard-coded vales are set at the start of main()
-# Incomplete in the sense that surrounding countries (based on the country of
-# interest are not automatically downloaded - this is on a todo list)
-# Also need to write an unzipper - assuming there will be a specific location
-# to save the data.
+# Various functions for checking and processing GADM data in a Geopackage
 #############################################################################
 
 import os
@@ -17,8 +11,6 @@ import fiona
 import geopandas as gpd
 import fnmatch
 import datetime
-
-#from utils.requests_api import download_url
 
 import pdb
 
@@ -86,12 +78,6 @@ def download_url(url, save_path, chunk_size=128):
 
 ##
 #
-def unzip_geopkg(source_zip):
-    pass
-
-
-##
-#
 def is_int(string):
     try:
         int(string)
@@ -99,13 +85,12 @@ def is_int(string):
     except ValueError:
         return False
 
-
 ##
 # Aggregate lower admin levels for specified country
 def get_country_admin_levels(gdf_world, country_aoi):
     print('Checking {0} Admin Levels.'.format(country_aoi))
     return_dict = {}
-    gdf = gdf_world.loc[gdf_world['NAME_0'] == country_aoi].copy()
+    gdf = gdf_world.loc[gdf_world['GID_0'] == country_aoi].copy()
     # Determine level of admin - check GID_* cols for None values.
     cols = gdf.columns.values.tolist()
     gdf_gid = gdf[fnmatch.filter(cols, 'GID_*')].copy()
@@ -164,15 +149,13 @@ def get_country_admin_levels(gdf_world, country_aoi):
 ##
 # If gdf is passed only no way to know what the AOI country is.
 def get_neighbour_countries(gdf_source, gdf_A0=None, NAME_0=None, GID_0=None):
-    print('Checking neighbour countries.')
+    print('Extending bounding box.')
     # https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude#19412565
-
     bbox = gdf_A0.bounds
     minx = bbox.minx[0]
     maxx = bbox.maxx[0]
     miny = bbox.miny[0]
     maxy = bbox.maxy[0]
-
     # Ropey way to scale the WGS84 bounding box by a factor... 
     # Should probably map these to see what the distortion ends up as.
     factor = 0.1    # does this mean 10% ???
@@ -180,7 +163,6 @@ def get_neighbour_countries(gdf_source, gdf_A0=None, NAME_0=None, GID_0=None):
     lonDistScaled = 360 * ((pcLon * factor) + pcLon) 
     pcLat = abs(miny-maxy) / 180    # Total degrees Y axis
     latDistScaled = 180 * ((pcLat * factor) + pcLat)
-
     # Use the centroid to extend out to scaled bbox
 #    centroid = gdf_A0.centroid # Not sure if the centroid is the centre when
                                # compared to the bounding box
@@ -192,15 +174,14 @@ def get_neighbour_countries(gdf_source, gdf_A0=None, NAME_0=None, GID_0=None):
     maxxScale = centX + (lonDistScaled / 2)
     minyScale = centY - (latDistScaled / 2)
     maxyScale = centY + (latDistScaled / 2)
-
     # Use CX method to query by scaled bounding box coords
-    print('Looking for neighbours')
+    print('Checking neighbour countries.')
     print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     gdf_n_check = gdf_source.cx[minxScale:maxxScale, minyScale:maxyScale] 
     print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    # 
-#    gdf_n_check.remove(<country_aoi>)
-    return gdf_n_check['NAME_0'].unique().tolist()
+    # Note the country list will also include the original country of
+    # interest.
+    return gdf_n_check['GID_0'].unique().tolist()
 
 
 ##
@@ -217,81 +198,3 @@ def write_to_gpkg(gdf_aoi_levels, version, aoi_dir, country_aoi, neigh=None):
             layer = 'gadm{0}_{1}_{2}'.format(version, country_aoi, level)
         gdf_level.to_file(gpkg, layer=layer, driver="GPKG")
         print('Writing {0} to {1}'.format(layer, gpkg))
-
-##
-#
-def main():
-    # Assume that the supplier/format/local holding  will be in a config file
-    # but for now:
-#    country_aoi = 'Yemen'
-    country_aoi = 'Oman'
-    supplier = r'GADM'
-    source_format = r'geopackage'
-    ma_holding = r'J:\05_OpenData\GADM\gadm36_gpkg.zip'
-    gadm_geopkg = r'J:\05_OpenData\GADM\gadm36_gpkg\gadm36.gpkg'
-    aoi_dir = r'J:\05_OpenData\GADM\{0}'.format(country_aoi)
-
-    # Download new GADM data if the version specified on the site has changed.
-    result, url, version = check_version(ma_holding, supplier)
-    if result is True and url:
-        msg = 'Completed checks. Source version found not the same as ' \
-'source version held.'
-        print(msg)
-        print(url)
-        # Downloading found link
-        # Create new download path - config file?
-        print('Preparing new download path for source...')
-        dl_path, dl_file = os.path.split(ma_holding)
-        source_path, source_file = os.path.split(url)
-        new_holding = os.path.join(dl_path, source_file)
-        print("\t{0}".format(new_holding))
-        if os.path.exists(new_holding):
-            msg = "Found existing holding which appears to be the same as " \
-"source version due to be downloaded. Is the config file up to date?"
-            print(msg)
-        download_url(url, new_holding) 
-    elif result is True and not url:
-        print('Current held version is the same as current source version.')
-    elif result is False:
-        print('Unable to complete check.')
-
-    # Do the unzip here
-    # Code not done yet so done manually
-
-    # Get the country from the World Geopackage. 
-    print("Reading in World GeoPackage")
-    for layername in fiona.listlayers(gadm_geopkg):
-        #with fiona.open(gadm_geopkg, layer=layername) as src:
-        #    print(layername, len(src))
-        #    for feature in src:
-        #        print(feature['geometry'])
-        print('Reading into geopandas') # Takes about 3-5 min?
-        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        gdf = gpd.read_file(gadm_geopkg, layer=layername) 
-        print('Done reading')
-        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        # Get Country - the GADM files include lowest level admin only
-        gdf_aoi_levels = get_country_admin_levels(gdf, country_aoi)
-        # Add gdf as layers to the same geopackage.
-        # gdf_aoi_levels, version, aoi_dir, country_aoi
-        write_to_gpkg(gdf_aoi_levels, version, aoi_dir, country_aoi)
-        # Extract Surrounding countries 
-        neighbours = get_neighbour_countries(gdf, gdf_A0=gdf_aoi_levels['a0'])
-        if country_aoi in neighbours: neighbours.remove(country_aoi)
-        print('Found neighbours {0}'.format(','.join(neighbours)))
-        # Process each surrounding country
-        for neighbour in neighbours:
-            gdf_aoi_levels = get_country_admin_levels(gdf, neighbour)
-            # Write to different geopackage
-#            write_to_gpkg(gdf_aoi_levels, version, aoi_dir, neighbour)
-            # Can add to the same geopackage
-            write_to_gpkg(gdf_aoi_levels, version, aoi_dir,
-                    country_aoi, neigh=neighbour)
-
-    print('Done.')
-
-
-if __name__ == '__main__':
-    main()
-
-
