@@ -14,3 +14,10 @@ adm0:
   cod:
     raw: cod_adm0.zip
     processed: yem_admn_ad0_py_s0_unocha_pp.shp
+surrounding:
+  schema: admin0_surrounding_countries_py.yml
+  gadm:
+    rawzip: gadm36_gpkg.zip
+    raw: gadm36.gpkg
+    processed: yem_admn_ad0_py_s0_gadm_pp_surrounding_countries.shp
+    url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_gpkg.zip'

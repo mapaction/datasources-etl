@@ -21,6 +21,16 @@ rule extract_adm0_gadm:
         "curl {params} -o {output} -O -J -L"
 
 
+rule extract_world_gadm:
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['surrounding']['gadm']['rawzip'])
+    params:
+        url=config['surrounding']['gadm']['url']
+    shell:
+        "extract_world_gadm {input} {output}"
+
+
 rule transform_adm0_cod:
     input:
         os.path.join(config['dirs']['raw_data'], config['adm0']['cod']['raw']),
@@ -39,3 +49,16 @@ rule transform_adm0_gadm:
         os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed'])
     shell:
         "transform_adm0_gadm {input} {output}"
+
+
+rule transform_surrounding_gadm:
+    input:
+        os.path.join(
+            config['dirs']['raw_data'], config['surrounding']['gadm']['rawzip']),
+        os.path.join(
+            config['dirs']['schemas'], config['surrounding']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['surrounding']['gadm']['processed'])
+    shell:
+        "transform_surrounding_gadm {input} {output}"
+
