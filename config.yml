@@ -14,3 +14,15 @@ adm0:
   cod:
     raw: cod_adm0.zip
     processed: yem_admn_ad0_py_s0_unocha_pp.shp
+adm1:
+  schema: admin1_affected_area_py.yml
+  gadm:
+    raw: gadm_adm1.zip
+    processed: yem_admn_ad1_py_s0_gadm_pp.shp
+    url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
+adm2:
+  schema: admin2_affected_area_py.yml
+  gadm:
+    raw: gadm_adm2.zip
+    processed: yem_admn_ad2_py_s0_gadm_pp.shp
+    url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
