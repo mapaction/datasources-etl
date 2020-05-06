@@ -3,77 +3,11 @@
 #############################################################################
 
 import os
-import requests
-from requests.compat import urljoin
-from bs4 import BeautifulSoup
+import fnmatch
+import datetime
 import re
 import fiona
 import geopandas as gpd
-import fnmatch
-import datetime
-
-import pdb
-
-##
-#
-def check_version(held_version, supplier):
-    """ Check the source vs held version. Returns True/False if file names
-    match """
-    print("Checking supplier holding:\n\t{0}\n\t{1}".format(supplier,
-        held_version))
-    # In the case of GADM need to parse the following data 'home-page' for a
-    # version.
-    # Assume that this function knows how to check each supplier source to
-    # obtain a comparable version. In that sense this function will behave
-    # differently depending on what supplier is being checked.
-    # In this case also assumes that the format to be checked is a geopackage
-    if supplier == 'GADM':
-        gdal_home = r''
-        # Check data home-page for latest version and download link:
-        download_page_html = r'https://gadm.org/download_world.html' 
-        page = requests.get(download_page_html)
-        soup = BeautifulSoup(page.text, 'html.parser')
-        h4_list = soup.find_all("h4")
-        if len(h4_list) > 1:
-            # At the time of processing there was only one h4 tag in the html
-            print('Page format may have changed.')
-        version = h4_list[0].text.strip()
-        if 'Current version' not in version:
-            print('Warning. Could not verify h4 expected to contain version details')
-            print("Found: '{0}'".format(version))
-        # Search for expected download link
-        version = re.sub(r'[^\d]+', '', version)
-        expected_df = "gadm{0}_gpkg.zip".format(version)
-        a_list = soup.find_all("a")
-        dl_link = None
-        for a in a_list:
-            path, dl_file = os.path.split(a.attrs['href'])
-            if dl_file == expected_df:
-                dl_link = urljoin("{0}/".format(path), dl_file)
-                print("Found download link:\n\t{0}".format(dl_link))
-                break
-        if not dl_link: 
-            print("Did not find expected download link")
-            return False, None, version
-        # Compare
-        held_path, held_file = os.path.split(held_version)
-        if held_file != dl_file:
-            return True, dl_link, version 
-        else:
-            return True, None, version
-    else:
-        print('Did not recognise supplier.')
-        return False, None, None
-
-##
-#
-def download_url(url, save_path, chunk_size=128):
-    r = requests.get(url, stream=True)
-    with open(save_path, 'wb') as fd:
-        for chunk in r.iter_content(chunk_size=chunk_size):
-            fd.write(chunk)
-    #logger.info(f'Downloaded "{url}" to "{save_path}"')
-    print('Downloaded {0} to {1}'.format(url, save_path))
 
 
 ##
@@ -90,6 +24,7 @@ def is_int(string):
 def get_country_admin_levels(gdf_world, country_aoi):
     print('Checking {0} Admin Levels.'.format(country_aoi))
     return_dict = {}
+    #gdf = gdf_world.loc[gdf_world['GID_0'] == country_aoi].copy()
     gdf = gdf_world.loc[gdf_world['GID_0'] == country_aoi].copy()
     # Determine level of admin - check GID_* cols for None values.
     cols = gdf.columns.values.tolist()

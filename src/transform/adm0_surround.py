@@ -4,17 +4,16 @@
 
 import sys
 import os
+import datetime
+import zipfile
+from jsonschema import validate
 import fiona
 import geopandas as gpd
-import logging
-import datetime
 import pandas as pd
-from jsonschema import validate
 
 from utils.yaml_api import parse_yaml 
-from utils import gadm_gpkg_processing
+from transform import gadm_gpkg_processing
 
-import pdb
 
 ##
 #
@@ -28,6 +27,15 @@ def transform():
     output_filename = os.path.join(
             config['dirs']['processed_data'], 
             config['surrounding']['gadm']['processed'])
+    # Unzip - as reading zipped world geopackage takes too long
+    rawdir = config['dirs']['raw_data']
+    zipgpkg = config['surrounding']['gadm']['rawzip']
+    source_gadm_world = os.path.join(rawdir, zipgpkg)
+    print(r'Unzipping {0} to {1}'.format(source_gadm_world, held_gpkg))
+    gadmzip = zipfile.ZipFile(source_gadm_world, 'r')
+    gadmzip.extractall(rawdir)
+    gadmzip.close()
+    # Check unzip was ok?
     print(f'Reading {held_gpkg}')
     for layername in fiona.listlayers(held_gpkg):
         print(f'Reading {layername} into Geopandas. Takes about 2 mins...')
@@ -41,8 +49,8 @@ def transform():
     # Get neighbours
     neighbours = gadm_gpkg_processing.get_neighbour_countries(
             gdf, gdf_A0=gdf_aoi_levels['a0'])
-    # Remove country of interest from neighbours list
-    if country_aoi in neighbours: neighbours.remove(country_aoi)
+    # Remove country of interest from neighbours list if required.
+    #if country_aoi in neighbours: neighbours.remove(country_aoi)
     print(r'Found {0}'.format(','.join(neighbours)))
     # Process all neighbour countries
     A0_list = []

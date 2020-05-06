@@ -24,7 +24,7 @@ rule extract_adm0_gadm:
 rule extract_world_gadm:
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['surrounding']['gadm']['raw'])
+            config['dirs']['raw_data'], config['surrounding']['gadm']['rawzip'])
     params:
         url=config['surrounding']['gadm']['url']
     shell:
@@ -54,7 +54,7 @@ rule transform_adm0_gadm:
 rule transform_surrounding_gadm:
     input:
         os.path.join(
-            config['dirs']['raw_data'], config['surrounding']['gadm']['raw']),
+            config['dirs']['raw_data'], config['surrounding']['gadm']['rawzip']),
         os.path.join(
             config['dirs']['schemas'], config['surrounding']['schema'])
     output:
