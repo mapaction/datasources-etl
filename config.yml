@@ -24,6 +24,12 @@ adm1:
     raw: cod_adm1.zip
     processed: yem_admn_ad1_py_s0_unocha_pp.shp
 adm2:
+  schema: admin2_affected_area_py.yml
   cod:
     raw: cod_adm2.zip
     processed: yem_admn_ad2_py_s0_unocha_pp.shp
+adm3:
+  schema: admin3_affected_area_py.yml
+  cod:
+    raw: cod_adm3.zip
+    processed: yem_admn_ad3_py_s0_unocha_pp.shp
