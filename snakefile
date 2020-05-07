@@ -36,7 +36,8 @@ rule transform_adm0_cod:
         os.path.join(config['dirs']['raw_data'], config['adm0']['cod']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['adm0']['cod']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['adm0']['cod']['processed']),
+        os.path.join(config['dirs']['processed_data'], config['adm0']['cod']['processed_boundaries'])
     shell:
         "transform_adm0_cod {input} {output}"
 
@@ -46,7 +47,8 @@ rule transform_adm0_gadm:
         os.path.join(config['dirs']['raw_data'], config['adm0']['gadm']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed']),
+        os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed_boundaries'])
     shell:
         "transform_adm0_gadm {input} {output}"
 

@@ -4,20 +4,22 @@ import geopandas as gpd
 from jsonschema import validate
 
 from utils.yaml_api import parse_yaml
+from utils.geoprocessing import poly_to_line
+
 
 GADM_FILENAME = 'gadm36_{ISO3}.gpkg'
 GADM_LAYER = 'gadm36_{ISO3}_0'
 
 
 def transform_cod():
-    transform('cod', sys.argv[1], sys.argv[2], sys.argv[3])
+    transform('cod', sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
 
 def transform_gadm():
-    transform('gadm', sys.argv[1], sys.argv[2], sys.argv[3])
+    transform('gadm', sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
 
-def transform(source: str, input_filename: str, schema_filename: str, output_filename: str):
+def transform(source: str, input_filename: str, schema_filename: str, output_filename: str, boundaries_filename: str):
     """
     :param source: "cod" or "gadm"
     """
@@ -42,5 +44,12 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     df_adm0['crs'] = df_adm0.crs
     # Validate
     validate(instance=df_adm0.to_dict('list'), schema=parse_yaml(schema_filename))
-    # Write to output
+    # Write to outputs
     df_adm0.to_file(output_filename)
+    # Boundaries - boundaries file should match schema of original file with geometry converted to line
+    # added to transform function as these outputs should be synchronised wherever possible.
+    df_adm0_boundaries = poly_to_line(df_adm0)
+    # Make geometry column needed for validation
+    df_adm0_boundaries['geometry_type'] = df_adm0_boundaries['geometry'].apply(lambda x: x.geom_type)
+    # Write to outputs
+    df_adm0_boundaries.to_file(boundaries_filename)

@@ -10,10 +10,12 @@ adm0:
   gadm:
     raw: gadm_adm0.zip
     processed: yem_admn_ad0_py_s0_gadm_pp.shp
+    processed_boundaries: yem_admn_ad0_ln_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
   cod:
     raw: cod_adm0.zip
     processed: yem_admn_ad0_py_s0_unocha_pp.shp
+    processed_boundaries: yem_admn_ad0_ln_s0_unocha_pp.shp
 surrounding:
   schema: admin0_surrounding_countries_py.yml
   gadm:
