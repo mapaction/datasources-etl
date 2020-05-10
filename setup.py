@@ -15,9 +15,9 @@ setuptools.setup(
             'extract_adm2_cod=extract.cod:get_adm2_snakemake',
             'extract_adm3_cod=extract.cod:get_adm3_snakemake',
             'transform_adm0_cod=transform.adm0:transform_cod',
-            'transform_adm1_cod=transform.adm0:transform_cod',
-            'transform_adm2_cod=transform.adm0:transform_cod',
-            'transform_adm3_cod=transform.adm0:transform_cod',
+            'transform_adm1_cod=transform.adm1:transform_cod',
+            'transform_adm2_cod=transform.adm2:transform_cod',
+            'transform_adm3_cod=transform.adm3:transform_cod',
             'transform_adm0_gadm=transform.adm0:transform_gadm',
         ]
     }

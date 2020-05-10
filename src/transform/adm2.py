@@ -1,6 +1,7 @@
 import sys
 
 import geopandas as gpd
+import fiona
 from jsonschema import validate
 
 from utils.yaml_api import parse_yaml
@@ -23,9 +24,22 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     """
     config = parse_yaml('config.yml')
 
-##TODO: extract only admin 2
     if source == "cod":
-        df_adm2 = gpd.read_file(f'zip://{input_filename}')
+        layerlist = fiona.listlayers(f'zip://{input_filename}')
+        search = 'adm2'
+        for sublist in layerlist:
+            if search in sublist:
+                with fiona.open(f'zip://{input_filename}', layer=sublist) as layer:
+                    for feature in layer:
+                        if feature['geometry']['type'] == 'MultiPolygon':
+                            # print(feature['geometry']['type'],sublist)
+                            adm2 = sublist
+        # print(adm2)
+
+        index = layerlist.index(adm2)
+        adm2_name = layerlist[index]
+
+        df_adm2 = gpd.read_file(f'zip://{input_filename}', layer=adm2_name)
         schema_mapping = {
             'admin2Name_en': 'name_en'
         }

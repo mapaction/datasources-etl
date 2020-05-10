@@ -1,6 +1,7 @@
 import sys
 
 import geopandas as gpd
+import fiona
 from jsonschema import validate
 
 from utils.yaml_api import parse_yaml
@@ -22,8 +23,23 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     :param source: "cod" or "gadm"
     """
     config = parse_yaml('config.yml')
+
     if source == "cod":
-        df_adm0 = gpd.read_file(f'zip://{input_filename}')
+        layerlist = fiona.listlayers(f'zip://{input_filename}')
+        search = 'adm0'
+        for sublist in layerlist:
+            if search in sublist:
+                with fiona.open(f'zip://{input_filename}', layer=sublist) as layer:
+                    for feature in layer:
+                        if feature['geometry']['type'] == 'MultiPolygon':
+                            # print(feature['geometry']['type'],sublist)
+                            adm0 = sublist
+        # print(adm0)
+
+        index = layerlist.index(adm0)
+        adm0_name = layerlist[index]
+
+        df_adm0 = gpd.read_file(f'zip://{input_filename}', layer=adm0_name)
         schema_mapping = {
             'admin0Name_en': 'name_en'
         }
