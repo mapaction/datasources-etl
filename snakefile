@@ -36,7 +36,7 @@ rule extract_adm3_cod:
     shell:
         "extract_adm2_cod {params} {output}"
 
-##Extract GADM
+# Extract GADM
 rule extract_adm0_gadm:
     output:
         os.path.join(config['dirs']['raw_data'], config['adm0']['gadm']['raw'])
@@ -46,13 +46,25 @@ rule extract_adm0_gadm:
         "curl {params} -o {output} -O -J -L"
 
 rule extract_world_gadm:
+    # Note. By removing the output Snakemake will always re-run the process
+    # this means we could program a test into the extract process if
+    # necessary.
     output:
         os.path.join(
             config['dirs']['raw_data'], config['surrounding']['gadm']['rawzip'])
-    params:
-        url=config['surrounding']['gadm']['url']
     shell:
-        "extract_world_gadm {input} {output}"
+        "extract_world_gadm"
+
+# Extract Geoboundaries
+rule extract_geoboundaries:
+    output:
+      [
+        "{0}/{1}".format(config['dirs']['raw_data'],r'geobnd_adm0.zip'),
+        "{0}/{1}".format(config['dirs']['raw_data'],r'geobnd_adm1.zip'),
+        "{0}/{1}".format(config['dirs']['raw_data'],r'geobnd_adm2.zip')
+      ]
+    shell:
+        "extract_geoboundaries"
 
 ##TRANSFORM
 ##Transform HDX COD
@@ -103,15 +115,43 @@ rule transform_adm0_gadm:
     shell:
         "transform_adm0_gadm {input} {output}"
 
-
 rule transform_surrounding_gadm:
-    input:
-        os.path.join(
-            config['dirs']['raw_data'], config['surrounding']['gadm']['rawzip']),
-        os.path.join(
-            config['dirs']['schemas'], config['surrounding']['schema'])
     output:
         os.path.join(config['dirs']['processed_data'], config['surrounding']['gadm']['processed'])
     shell:
-        "transform_surrounding_gadm {input} {output}"
+        "transform_surrounding_gadm"
 
+# Transform Geoboundaries
+rule transform_adm0_geoboundaries:
+    input:
+        os.path.join(config['dirs']['raw_data'],
+            config['geoboundaries']['adm0']['raw']),
+        os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
+    output:
+        os.path.join( config['dirs']['processed_data'], 
+            config['geoboundaries']['adm0']['processed']),
+    shell:
+        "transform_adm0_geoboundaries {input} {output}"
+
+rule transform_adm1_geoboundaries:
+    input:
+        os.path.join(config['dirs']['raw_data'],
+            config['geoboundaries']['adm1']['raw']),
+        os.path.join( config['dirs']['schemas'], config['adm0']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], 
+            config['geoboundaries']['adm1']['processed'])
+    shell:
+        "transform_adm1_geoboundaries {input} {output}"
+ 
+rule transform_adm2_geoboundaries:
+    input:
+        os.path.join( config['dirs']['raw_data'],
+            config['geoboundaries']['adm2']['raw']),
+        os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], 
+            config['geoboundaries']['adm2']['processed'])
+    shell:
+        "transform_adm2_geoboundaries {input} {output}"
+ 

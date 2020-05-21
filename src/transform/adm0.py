@@ -1,5 +1,6 @@
 import sys
-
+import os
+import zipfile
 import geopandas as gpd
 import fiona
 from jsonschema import validate
@@ -16,6 +17,10 @@ def transform_cod():
 
 def transform_gadm():
     transform('gadm', sys.argv[1], sys.argv[2], sys.argv[3])
+
+
+def transform_geoboundaries():
+    transform('geoboundaries', sys.argv[1], sys.argv[2], sys.argv[3])
 
 
 def transform(source: str, input_filename: str, schema_filename: str, output_filename: str):
@@ -49,6 +54,27 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
         schema_mapping = {
             'NAME_0': 'name_en'
         }
+    elif source == "geoboundaries":
+        rawdir = config['dirs']['raw_data']
+        source_geob = os.path.join(rawdir, config['geoboundaries']['adm0']['raw'])
+        unzipped, ext = os.path.splitext(source_geob)
+        # Unzip
+        geobndzip = zipfile.ZipFile(source_geob, 'r')
+        geobndzip.extractall(unzipped)
+        geobndzip.close()
+        # Find geojson
+        geojson = []
+        for root, dirs, files in os.walk(unzipped):
+            for filename in files:
+                if filename.endswith(".geojson"):
+                    geojson.append(os.path.join(root, filename))
+        if len(geojson) > 1:
+            print('Found more than one geojson file in {0}'.format(zippedshpdir))
+        elif len(geojson) == 0:
+            print('Found no geojson files in {0}'.format(zippedshpdir))
+        else:
+            df_adm0 = gpd.read_file(geojson[0])
+        schema_mapping = {'shapeName': 'name_en'}
     # Change CRS
     df_adm0 = df_adm0.to_crs(config['constants']['crs'])
     # Modify the column names to suit the schema
@@ -60,3 +86,4 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     validate(instance=df_adm0.to_dict('list'), schema=parse_yaml(schema_filename))
     # Write to output
     df_adm0.to_file(output_filename)
+
