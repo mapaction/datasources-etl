@@ -130,8 +130,8 @@ rule transform_adm0_geoboundaries:
             config['geoboundaries']['adm0']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
-        os.path.join( config['dirs']['processed_data'], 
-            config['geoboundaries']['adm0']['processed']),
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm0']['processed']),
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm0']['processed_boundaries'])
     shell:
         "transform_adm0_geoboundaries {input} {output}"
 
@@ -139,7 +139,7 @@ rule transform_adm1_geoboundaries:
     input:
         os.path.join(config['dirs']['raw_data'],
             config['geoboundaries']['adm1']['raw']),
-        os.path.join( config['dirs']['schemas'], config['adm0']['schema'])
+        os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
         os.path.join(config['dirs']['processed_data'], 
             config['geoboundaries']['adm1']['processed'])
