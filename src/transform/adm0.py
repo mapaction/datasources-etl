@@ -1,6 +1,8 @@
 import sys
-
+import os
+import zipfile
 import geopandas as gpd
+import fiona
 from jsonschema import validate
 
 from utils.yaml_api import parse_yaml
@@ -19,13 +21,32 @@ def transform_gadm():
     transform('gadm', sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
 
+def transform_geoboundaries():
+    transform('geoboundaries', sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+
+
 def transform(source: str, input_filename: str, schema_filename: str, output_filename: str, boundaries_filename: str):
     """
     :param source: "cod" or "gadm"
     """
     config = parse_yaml('config.yml')
+
     if source == "cod":
-        df_adm0 = gpd.read_file(f'zip://{input_filename}')
+        layerlist = fiona.listlayers(f'zip://{input_filename}')
+        search = 'adm0'
+        for sublist in layerlist:
+            if search in sublist:
+                with fiona.open(f'zip://{input_filename}', layer=sublist) as layer:
+                    for feature in layer:
+                        if feature['geometry']['type'] == 'MultiPolygon':
+                            # print(feature['geometry']['type'],sublist)
+                            adm0 = sublist
+        # print(adm0)
+
+        index = layerlist.index(adm0)
+        adm0_name = layerlist[index]
+
+        df_adm0 = gpd.read_file(f'zip://{input_filename}', layer=adm0_name)
         schema_mapping = {
             'admin0Name_en': 'name_en'
         }
@@ -35,6 +56,27 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
         schema_mapping = {
             'NAME_0': 'name_en'
         }
+    elif source == "geoboundaries":
+        rawdir = config['dirs']['raw_data']
+        source_geob = os.path.join(rawdir, config['geoboundaries']['adm0']['raw'])
+        unzipped, ext = os.path.splitext(source_geob)
+        # Unzip
+        geobndzip = zipfile.ZipFile(source_geob, 'r')
+        geobndzip.extractall(unzipped)
+        geobndzip.close()
+        # Find geojson
+        geojson = []
+        for root, dirs, files in os.walk(unzipped):
+            for filename in files:
+                if filename.endswith(".geojson"):
+                    geojson.append(os.path.join(root, filename))
+        if len(geojson) > 1:
+            print('Found more than one geojson file in {0}'.format(zippedshpdir))
+        elif len(geojson) == 0:
+            print('Found no geojson files in {0}'.format(zippedshpdir))
+        else:
+            df_adm0 = gpd.read_file(geojson[0])
+        schema_mapping = {'shapeName': 'name_en'}
     # Change CRS
     df_adm0 = df_adm0.to_crs(config['constants']['crs'])
     # Modify the column names to suit the schema
