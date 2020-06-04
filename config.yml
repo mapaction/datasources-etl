@@ -9,40 +9,54 @@ adm0:
   schema: admin0_affected_area_py.yml
   gadm:
     raw: gadm_adm0.zip
-    processed: yem_admn_ad0_py_s0_gadm_pp.shp
-    processed_boundaries: yem_admn_ad0_ln_s0_gadm_pp.shp
+    processed:
+      py: yem_admn_ad0_py_s0_gadm_pp.shp
+      ln: yem_admn_ad0_ln_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
   cod:
     raw: cod_adm0.zip
-    processed: yem_admn_ad0_py_s0_unocha_pp.shp
-    processed_boundaries: yem_admn_ad0_ln_s0_unocha_pp.shp
+    processed:
+      py: yem_admn_ad0_py_s0_unocha_pp.shp
+      ln: yem_admn_ad0_ln_s0_unocha_pp.shp
 adm1:
   schema: admin1_affected_area_py.yml
   gadm:
     raw: gadm_adm1.zip
-    processed: yem_admn_ad1_py_s0_gadm_pp.shp
+    processed:
+      py: yem_admn_ad1_py_s0_gadm_pp.shp
+      ln: yem_admn_ad1_ln_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
   cod:
     raw: cod_adm1.zip
-    processed: yem_admn_ad1_py_s0_unocha_pp.shp
+    processed:
+      py: yem_admn_ad1_py_s0_unocha_pp.shp
+      ln: yem_admn_ad1_ln_s0_unocha_pp.shp
 adm2:
   schema: admin2_affected_area_py.yml
   gadm:
     raw: gadm_adm2.zip
-    processed: yem_admn_ad2_py_s0_gadm_pp.shp
+    processed:
+      py: yem_admn_ad2_py_s0_gadm_pp.shp
+      ln: yem_admn_ad2_ln_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'  
   cod:
     raw: cod_adm2.zip
-    processed: yem_admn_ad2_py_s0_unocha_pp.shp
+    processed:
+      py: yem_admn_ad2_py_s0_unocha_pp.shp
+      ln: yem_admn_ad2_ln_s0_unocha_pp.shp
 adm3:
   schema: admin3_affected_area_py.yml
   gadm:
     raw: gadm_adm3.zip
-    processed: yem_admn_ad3_py_s0_gadm_pp.shp
+    processed:
+      py: yem_admn_ad3_py_s0_gadm_pp.shp
+      ln: yem_admn_ad3_ln_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'  
   cod:
     raw: cod_adm3.zip
-    processed: yem_admn_ad3_py_s0_unocha_pp.shp
+    processed:
+      py: yem_admn_ad3_py_s0_unocha_pp.shp
+      ln: yem_admn_ad3_ln_s0_unocha_pp.shp
 surrounding:
   schema: admin0_surrounding_countries_py.yml
   gadm:
@@ -59,11 +73,16 @@ geoboundaries:
   adm0:
     raw: 'geobnd_adm0.zip'
     unzip: 'geobnd_adm0'
-    processed: 'yem_admn_ad0_py_s0_geobnd_pp.shp'
-    processed_boundaries: 'yem_admn_ad0_ln_s0_geobnd_pp.shp'
+    processed:
+      py: 'yem_admn_ad0_py_s0_geobnd_pp.shp'
+      ln: 'yem_admn_ad0_ln_s0_geobnd_pp.shp'
   adm1:
     raw: 'geobnd_adm1.zip'
-    processed: 'yem_admn_ad1_py_s0_geobnd_pp.shp'
+    processed:
+      py: 'yem_admn_ad1_py_s0_geobnd_pp.shp'
+      ln: 'yem_admn_ad1_ln_s0_geobnd_pp.shp'
   adm2:
     raw: 'geobnd_adm2.zip'
-    processed: 'yem_admn_ad2_py_s0_geobnd_pp.shp'
+    processed:
+      py: 'yem_admn_ad2_py_s0_geobnd_pp.shp'
+      ln: 'yem_admn_ad2_ln_s0_geobnd_pp.shp'

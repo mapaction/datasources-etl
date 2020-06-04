@@ -74,8 +74,8 @@ rule transform_adm0_cod:
         os.path.join(config['dirs']['raw_data'], config['adm0']['cod']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['adm0']['cod']['processed']),
-        os.path.join(config['dirs']['processed_data'], config['adm0']['cod']['processed_boundaries'])
+        os.path.join(config['dirs']['processed_data'], config['adm0']['cod']['processed']['py']),
+        os.path.join(config['dirs']['processed_data'], config['adm0']['cod']['processed']['ln'])
     shell:
         "transform_adm0_cod {input} {output}"
 
@@ -84,7 +84,9 @@ rule transform_adm1_cod:
         os.path.join(config['dirs']['raw_data'], config['adm1']['cod']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm1']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['adm1']['cod']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['adm1']['cod']['processed']['py']),
+        os.path.join(config['dirs']['processed_data'], config['adm1']['cod']['processed']['ln'])
+
     shell:
         "transform_adm1_cod {input} {output}"
 
@@ -93,7 +95,8 @@ rule transform_adm2_cod:
         os.path.join(config['dirs']['raw_data'], config['adm2']['cod']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm2']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['adm2']['cod']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['adm2']['cod']['processed']['py']),
+        os.path.join(config['dirs']['processed_data'], config['adm2']['cod']['processed']['ln'])
     shell:
         "transform_adm2_cod {input} {output}"
 
@@ -102,7 +105,8 @@ rule transform_adm3_cod:
         os.path.join(config['dirs']['raw_data'], config['adm3']['cod']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm3']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['adm3']['cod']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['adm3']['cod']['processed']['py']),
+        os.path.join(config['dirs']['processed_data'], config['adm3']['cod']['processed']['ln'])
     shell:
         "transform_adm3_cod {input} {output}"
 
@@ -112,8 +116,8 @@ rule transform_adm0_gadm:
         os.path.join(config['dirs']['raw_data'], config['adm0']['gadm']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed']),
-        os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed_boundaries'])
+        os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed']['py']),
+        os.path.join(config['dirs']['processed_data'], config['adm0']['gadm']['processed']['ln'])
     shell:
         "transform_adm0_gadm {input} {output}"
 
@@ -130,8 +134,8 @@ rule transform_adm0_geoboundaries:
             config['geoboundaries']['adm0']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm0']['processed']),
-        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm0']['processed_boundaries'])
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm0']['processed']['py']),
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm0']['processed']['ln'])
     shell:
         "transform_adm0_geoboundaries {input} {output}"
 
@@ -141,8 +145,8 @@ rule transform_adm1_geoboundaries:
             config['geoboundaries']['adm1']['raw']),
         os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], 
-            config['geoboundaries']['adm1']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm1']['processed']['py']),
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm1']['processed']['ln'])
     shell:
         "transform_adm1_geoboundaries {input} {output}"
  
@@ -153,7 +157,10 @@ rule transform_adm2_geoboundaries:
         os.path.join(config['dirs']['schemas'], config['adm0']['schema'])
     output:
         os.path.join(config['dirs']['processed_data'], 
-            config['geoboundaries']['adm2']['processed'])
+            config['geoboundaries']['adm2']['processed']['py']),
+        os.path.join(config['dirs']['processed_data'],
+            config['geoboundaries']['adm1']['processed']['ln'])
+
     shell:
         "transform_adm2_geoboundaries {input} {output}"
  
