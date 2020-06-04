@@ -155,6 +155,7 @@ rule transform_adm2_geoboundaries:
     shell:
         "transform_adm2_geoboundaries {input} {output}"
 
+# Extract roads
 rule extract_roads_osm:
     output:
         os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw'])
@@ -162,3 +163,12 @@ rule extract_roads_osm:
         url=config['roads']['osm']['url']
     shell:
         "wget \"{params}\" -O {output}"
+
+# Transform roads
+rule transform_roads_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['roads']['osm']['processed'])
+    shell:
+        "ogr2ogr -f \"ESRI Shapefile\" {output} --config OSM_USE_CUSTOM_INDEXING NO -nlt GEOMETRY {input}"
