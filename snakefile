@@ -154,4 +154,11 @@ rule transform_adm2_geoboundaries:
             config['geoboundaries']['adm2']['processed'])
     shell:
         "transform_adm2_geoboundaries {input} {output}"
- 
+
+rule extract_roads_osm:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw'])
+    params:
+        url=config['roads']['osm']['url']
+    shell:
+        "wget \"{params}\" -O {output}"
