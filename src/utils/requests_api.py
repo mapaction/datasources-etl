@@ -1,5 +1,6 @@
 import logging
 import requests
+import json
 
 logger = logging.getLogger()
 
@@ -10,3 +11,12 @@ def download_url(url, save_path, chunk_size=128):
         for chunk in r.iter_content(chunk_size=chunk_size):
             fd.write(chunk)
     logger.info(f'Downloaded "{url}" to "{save_path}"')
+
+
+def get_json(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+       print('Did not get 200 response from query.')
+       return False
+    jr = json.loads(r.text) 
+    return jr
