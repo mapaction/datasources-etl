@@ -7,12 +7,23 @@ logger = logging.getLogger(__name__)
 
 
 ###############################################################################
+def get_srtm30_root_url():
+    """
+    The root url to download SRTM 30m zip files from
+    :return:
+    """
+    srtm30_url = 'http://e4ftl01.cr.usgs.gov/SRTM/SRTMGL1.003/2000.02.11/'
+    return srtm30_url
+
+
+###############################################################################
 def get_srtm90_root_url():
     """
     The root url to download SRTM 90m zip files from
     :return:
     """
-    srtm90_url = 'http://srtm.csi.cgiar.org/wp-content/uploads/files/srtm_5x5/TIFF/'
+    srtm90_url = 'http://srtm.csi.cgiar.org/' + \
+                 'wp-content/uploads/files/srtm_5x5/TIFF/'
     return srtm90_url
 
 
@@ -37,10 +48,43 @@ def latitude_to_srtm90_grid_lat(latitude):
 
 
 ###############################################################################
-def determine_srtm_90_zip(country_gpkg=None):
+def longitude_to_srtm30_text_long(longitude):
     """
-    SRTM is stored in 5x5 degree grids, this script determines which zip
-    files to download to cover the country
+    Determine longitudes within SRTM 1-degree grid
+    EW Meridian is E000 and tiles indexed by western-most coordinate
+    """
+
+    flong = np.floor(longitude)
+    if flong < 0.:
+        tlong = "W%03d" % (abs(flong))
+    else:
+        tlong = "E%03d" % (abs(flong))
+
+    return tlong
+
+
+###############################################################################
+def latitude_to_srtm30_text_lat(latitude):
+    """
+    Determine latitudes within SRTM 1-degree grid
+    NS Equator is N00 and tiles indexed by southern-most coordinate
+    """
+
+    flat = np.floor(latitude)
+    if flat < 0.:
+        tlat = "S%02d" % (abs(flat))
+    else:
+        tlat = "N%02d" % (abs(flat))
+
+    return tlat
+
+
+###############################################################################
+def get_country_bounds(country_gpkg=None):
+    """
+    :param country_gpkg: geopackage of country border
+    :return: bounds of country outline
+    N.B. adding this as separate module to allow insertion of tests
     """
 
     if country_gpkg is None:
@@ -54,7 +98,18 @@ def determine_srtm_90_zip(country_gpkg=None):
             "Country outline is not in EPSG 4326 (WGS84)"
         country_bnd = country.total_bounds
 
-    # TODO: Not dealt with countries that cross the international date line
+    return country_bnd
+
+
+###############################################################################
+def determine_srtm_90_zip(country_gpkg=None):
+    """
+    SRTM is stored in 5x5 degree grids, this script determines which zip
+    files to download to cover the country
+    """
+    country_bnd = get_country_bounds(country_gpkg=country_gpkg)
+
+    # TODO: Not dealt with countries that cross 180E/W longitude
     tru_long = [country_bnd[0], country_bnd[2]]
     tru_lat = [country_bnd[1], country_bnd[3]]
 
@@ -65,6 +120,7 @@ def determine_srtm_90_zip(country_gpkg=None):
     grid_lat = list(range(latitude_to_srtm90_grid_lat(max(tru_lat)),
                           latitude_to_srtm90_grid_lat(min(tru_lat)) + 1))
 
+    # TODO: check tile coincides with country outline
     for glon in grid_long:
         for glat in grid_lat:
             gcoord = '%02d_%02d' % (glon, glat)
@@ -72,3 +128,20 @@ def determine_srtm_90_zip(country_gpkg=None):
 
 
 ###############################################################################
+def determine_srtm_30_zip(country_gpkg=None):
+    """
+    Determine longitudes within SRTM 1-degree grid
+    More straightforward than SRTM 90!
+    """
+    country_bnd = get_country_bounds(country_gpkg=country_gpkg)
+
+    # TODO: Not dealt with countries that cross 180E/W longitude
+    tru_long = [country_bnd[0], country_bnd[2]]
+    tru_lat = [country_bnd[1], country_bnd[3]]
+
+    # TODO: check tile coincides with country outline
+    for glon in list(range(min(tru_long), max(tru_long))):
+        for glat in list(range(min(tru_lat), max(tru_lat))):
+            gcoord = latitude_to_srtm30_text_lat(glat) + \
+                     longitude_to_srtm30_text_long(glon)
+            yield '.'.join([gcoord, 'SRTMGL1', 'hgt', 'zip'])
