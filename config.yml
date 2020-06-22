@@ -20,20 +20,14 @@ adm1:
     raw: gadm_adm1.zip
     processed: yem_admn_ad1_py_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
-<<<<<<< HEAD
-=======
   cod:
     raw: cod_adm1.zip
     processed: yem_admn_ad1_py_s0_unocha_pp.shp
->>>>>>> master
 adm2:
   schema: admin2_affected_area_py.yml
   gadm:
     raw: gadm_adm2.zip
     processed: yem_admn_ad2_py_s0_gadm_pp.shp
-<<<<<<< HEAD
-    url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
-=======
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'  
   cod:
     raw: cod_adm2.zip
@@ -70,4 +64,3 @@ geoboundaries:
   adm2:
     raw: 'geobnd_adm2.zip'
     processed: 'yem_admn_ad2_py_s0_geobnd_pp.shp'
->>>>>>> master

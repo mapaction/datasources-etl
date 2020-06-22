@@ -22,15 +22,12 @@ setuptools.setup(
             'transform_adm2_cod=transform.adm2:transform_cod',
             'transform_adm3_cod=transform.adm3:transform_cod',
             'transform_adm0_gadm=transform.adm0:transform_gadm',
-<<<<<<< HEAD
             'transform_adm1_gadm=transform.adm1:transform_gadm',
             'transform_adm2_gadm=transform.adm2:transform_gadm',
-=======
             'transform_surrounding_gadm=transform.adm0_surround:transform',
             'transform_adm0_geoboundaries=transform.adm0:transform_geoboundaries',
             'transform_adm1_geoboundaries=transform.adm1:transform_geoboundaries',
             'transform_adm2_geoboundaries=transform.adm2:transform_geoboundaries'
->>>>>>> master
         ]
     }
 )

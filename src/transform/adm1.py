@@ -1,13 +1,8 @@
 import sys
-<<<<<<< HEAD
-
-import geopandas as gpd
-=======
 import os
 import zipfile
 import geopandas as gpd
 import fiona
->>>>>>> master
 from jsonschema import validate
 
 from utils.yaml_api import parse_yaml
@@ -24,22 +19,15 @@ def transform_gadm():
     transform('gadm', sys.argv[1], sys.argv[2], sys.argv[3])
 
 
-<<<<<<< HEAD
-=======
 def transform_geoboundaries():
     transform('geoboundaries', sys.argv[1], sys.argv[2], sys.argv[3])
 
 
->>>>>>> master
 def transform(source: str, input_filename: str, schema_filename: str, output_filename: str):
     """
     :param source: "cod" or "gadm"
     """
     config = parse_yaml('config.yml')
-<<<<<<< HEAD
-    if source == "cod":
-        df_adm0 = gpd.read_file(f'zip://{input_filename}')
-=======
 
     if source == "cod":
         layerlist = fiona.listlayers(f'zip://{input_filename}')
@@ -57,33 +45,15 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
         adm1_name = layerlist[index]
 
         df_adm1 = gpd.read_file(f'zip://{input_filename}', layer=adm1_name)
->>>>>>> master
         schema_mapping = {
             'admin1Name_en': 'name_en'
         }
     elif source == "gadm":
-<<<<<<< HEAD
-        df_adm0 = gpd.read_file(f'zip://{input_filename}!{GADM_FILENAME.format(ISO3=config["constants"]["ISO3"])}',
-=======
         df_adm1 = gpd.read_file(f'zip://{input_filename}!{GADM_FILENAME.format(ISO3=config["constants"]["ISO3"])}',
->>>>>>> master
                                 layer=GADM_LAYER.format(ISO3=config['constants']['ISO3']))
         schema_mapping = {
             'NAME_1': 'name_en'
         }
-<<<<<<< HEAD
-    # Change CRS
-    df_adm0 = df_adm0.to_crs(config['constants']['crs'])
-    # Modify the column names to suit the schema
-    df_adm0 = df_adm0.rename(columns=schema_mapping)
-    # Make columns needed for validation
-    df_adm0['geometry_type'] = df_adm0['geometry'].apply(lambda x: x.geom_type)
-    df_adm0['crs'] = df_adm0.crs
-    # Validate
-    validate(instance=df_adm0.to_dict('list'), schema=parse_yaml(schema_filename))
-    # Write to output
-    df_adm0.to_file(output_filename)
-=======
     elif source == "geoboundaries":
         rawdir = config['dirs']['raw_data']
         source_geob = os.path.join(rawdir, config['geoboundaries']['adm1']['raw'])
@@ -116,4 +86,3 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     validate(instance=df_adm1.to_dict('list'), schema=parse_yaml(schema_filename))
     # Write to output
     df_adm1.to_file(output_filename)
->>>>>>> master

@@ -45,7 +45,6 @@ rule extract_adm0_gadm:
     shell:
         "curl {params} -o {output} -O -J -L"
 
-<<<<<<< HEAD
 rule extract_adm1_gadm:
     output:
         os.path.join(config['dirs']['raw_data'], config['adm1']['gadm']['raw'])
@@ -62,7 +61,6 @@ rule extract_adm2_gadm:
     shell:
         "curl {params} -o {output} -O -J -L"
 
-=======
 rule extract_world_gadm:
     # Note. By removing the output Snakemake will always re-run the process
     # this means we could program a test into the extract process if
@@ -86,7 +84,6 @@ rule extract_geoboundaries:
 
 ##TRANSFORM
 ##Transform HDX COD
->>>>>>> master
 
 rule transform_adm0_cod:
     input:
@@ -134,7 +131,6 @@ rule transform_adm0_gadm:
     shell:
         "transform_adm0_gadm {input} {output}"
 
-<<<<<<< HEAD
 rule transform_adm1_gadm:
     input:
         os.path.join(config['dirs']['raw_data'], config['adm1']['gadm']['raw']),
@@ -152,7 +148,6 @@ rule transform_adm2_gadm:
         os.path.join(config['dirs']['processed_data'], config['adm2']['gadm']['processed'])
     shell:
         "transform_adm2_gadm {input} {output}"
-=======
 rule transform_surrounding_gadm:
     output:
         os.path.join(config['dirs']['processed_data'], config['surrounding']['gadm']['processed'])
@@ -193,4 +188,3 @@ rule transform_adm2_geoboundaries:
     shell:
         "transform_adm2_geoboundaries {input} {output}"
  
->>>>>>> master
