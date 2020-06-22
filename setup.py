@@ -14,6 +14,7 @@ setuptools.setup(
             'extract_adm1_cod=extract.cod:get_adm1_snakemake',
             'extract_adm2_cod=extract.cod:get_adm2_snakemake',
             'extract_adm3_cod=extract.cod:get_adm3_snakemake',
+            'extract_roads_cod=extract.cod:get_roads_snakemake',
             'extract_world_gadm=extract.gadm:get_world',
             'extract_geoboundaries=extract.geoboundaries:get_geoboundaries_adm',
 
@@ -21,6 +22,7 @@ setuptools.setup(
             'transform_adm1_cod=transform.adm1:transform_cod',
             'transform_adm2_cod=transform.adm2:transform_cod',
             'transform_adm3_cod=transform.adm3:transform_cod',
+            'transform_roads_cod=transform.roads:transform_cod',
             'transform_adm0_gadm=transform.adm0:transform_gadm',
             'transform_adm1_gadm=transform.adm1:transform_gadm',
             'transform_adm2_gadm=transform.adm2:transform_gadm',
