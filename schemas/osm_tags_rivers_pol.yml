@@ -2,6 +2,5 @@ osm_types:
   - relation
 tags:
   - water: 
-    # null value in dict to denote all.
   - natural:
     - water

@@ -4,6 +4,7 @@ dirs:
   schemas: schemas
 constants:
   ISO3: YEM
+  ISO2: YE
   crs: EPSG:2090
 adm0:
   schema: admin0_affected_area_py.yml
@@ -41,6 +42,17 @@ adm3:
   cod:
     raw: cod_adm3.zip
     processed: yem_admn_ad3_py_s0_unocha_pp.shp
+osm:
+  url: 'http://overpass-api.de/api/interpreter?'
+  rivers_pol:
+    osm_tags: 'osm_tags_rivers_pol.yml'
+    raw: osm_rivers_pol.xml
+  rivers_lin:
+    osm_tags: 'osm_tags_rivers_lin.yml'
+    raw: osm_rivers_lin.xml
+  roads:
+    osm_tags: 'osm_tags_roads.yml'
+    raw: osm_roads.xml
 surrounding:
   schema: admin0_surrounding_countries_py.yml
   gadm:

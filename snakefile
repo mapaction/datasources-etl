@@ -66,6 +66,22 @@ rule extract_geoboundaries:
     shell:
         "extract_geoboundaries"
 
+
+rule extract_osm_river_lin:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['rivers_pol']['osm_tags'])
+    params:
+        config['osm']['url']
+        config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rivers_pol']['raw'])
+     shell:
+        "extract_osm_river_lin {params} {input} {output}"
+
+
+
 ##TRANSFORM
 ##Transform HDX COD
 
