@@ -84,18 +84,18 @@ rule extract_geoboundaries:
         "extract_geoboundaries"
 
 
-rule extract_osm_river_lin:
+rule extract_osm_rivers_pol:
     input:
         os.path.join(
             config['dirs']['schemas'], config['osm']['rivers_pol']['osm_tags'])
     params:
-        config['osm']['url']
-        config['constants']['ISO2']
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
     output:
         os.path.join(
             config['dirs']['raw_data'], config['osm']['rivers_pol']['raw'])
-     shell:
-        "extract_osm_river_lin {params} {input} {output}"
+    shell:
+        "extract_osm_rivers_pol \"{params.url}\" \"{params.country}\" {input} {output}"
 
 
 
