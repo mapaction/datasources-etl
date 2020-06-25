@@ -1,0 +1,14 @@
+required:
+    - fclass
+properties:
+    geometry_type:
+        items:
+            enum:
+                - LineString
+                - MultiLineString
+        additionalItems: false
+    crs:
+        items:
+            enum:
+                - EPSG:2090
+        additionalItems: false

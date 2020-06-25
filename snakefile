@@ -34,7 +34,8 @@ rule extract_adm3_cod:
     params:
         raw_dir=config['dirs']['raw_data']
     shell:
-        "extract_adm2_cod {params} {output}"
+        "extract_adm3_cod {params} {output}"
+
 
 # Extract GADM
 rule extract_adm0_gadm:
@@ -42,6 +43,22 @@ rule extract_adm0_gadm:
         os.path.join(config['dirs']['raw_data'], config['adm0']['gadm']['raw'])
     params:
         url=config['adm0']['gadm']['url']
+    shell:
+        "curl {params} -o {output} -O -J -L"
+
+rule extract_adm1_gadm:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['adm1']['gadm']['raw'])
+    params:
+        url=config['adm1']['gadm']['url']
+    shell:
+        "curl {params} -o {output} -O -J -L"
+
+rule extract_adm2_gadm:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['adm2']['gadm']['raw'])
+    params:
+        url=config['adm2']['gadm']['url']
     shell:
         "curl {params} -o {output} -O -J -L"
 
@@ -131,6 +148,23 @@ rule transform_adm0_gadm:
     shell:
         "transform_adm0_gadm {input} {output}"
 
+rule transform_adm1_gadm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['adm1']['gadm']['raw']),
+        os.path.join(config['dirs']['schemas'], config['adm1']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['adm1']['gadm']['processed'])
+    shell:
+        "transform_adm1_gadm {input} {output}"
+
+rule transform_adm2_gadm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['adm2']['gadm']['raw']),
+        os.path.join(config['dirs']['schemas'], config['adm2']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['adm2']['gadm']['processed'])
+    shell:
+        "transform_adm2_gadm {input} {output}"
 rule transform_surrounding_gadm:
     output:
         os.path.join(config['dirs']['processed_data'], config['surrounding']['gadm']['processed'])
@@ -170,4 +204,41 @@ rule transform_adm2_geoboundaries:
             config['geoboundaries']['adm2']['processed'])
     shell:
         "transform_adm2_geoboundaries {input} {output}"
- 
+
+# Extract roads
+
+rule extract_roads_cod:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['roads']['cod']['raw'])
+    params:
+        raw_dir=config['dirs']['raw_data']
+    shell:
+        "extract_roads_cod {params} {output}"
+
+rule extract_roads_osm:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw'])
+    params:
+        url=config['roads']['osm']['url']
+    shell:
+        "wget \"{params}\" -O {output}"
+
+# Transform roads
+
+rule transform_roads_cod:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['roads']['cod']['raw']),
+        os.path.join(config['dirs']['schemas'], config['roads']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['roads']['cod']['processed'])
+    shell:
+        "transform_roads_cod {input} {output}"
+
+rule transform_roads_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw']),
+        os.path.join(config['dirs']['schemas'], config['roads']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['roads']['osm']['processed'])
+    shell:
+        "transform_roads_osm {input} {output}"
