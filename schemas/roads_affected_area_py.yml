@@ -1,10 +1,11 @@
 required:
-    - name_en
+    - fclass
 properties:
     geometry_type:
         items:
             enum:
                 - LineString
+                - MultiLineString
         additionalItems: false
     crs:
         items:
