@@ -1,0 +1,7 @@
+osm_types: 
+  - way 
+tags:
+  - waterway: 
+    - river
+    - stream
+    - canal
