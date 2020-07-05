@@ -83,6 +83,10 @@ rule extract_geoboundaries:
     shell:
         "extract_geoboundaries"
 
+rule extract_geoboundaries_adm0_all:
+    shell:
+        "extract_geoboundaries_adm0_all"
+
 ##TRANSFORM
 ##Transform HDX COD
 
@@ -188,6 +192,10 @@ rule transform_adm2_geoboundaries:
             config['geoboundaries']['adm2']['processed'])
     shell:
         "transform_adm2_geoboundaries {input} {output}"
+
+rule transform_surrounding_geoboundaries:
+    shell:
+        "transform_surrounding_geoboundaries"
 
 # Extract roads
 
