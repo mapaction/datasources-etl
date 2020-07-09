@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+from pathlib import Path
 
 import pandas as pd
 
@@ -39,6 +40,7 @@ def get_geoboundaries_adm(admLevel=None):
         raw = r'{0}{1}.zip'.format(config['geoboundaries']['raw'], adm)
         dl = level[config['geoboundaries']['downloadURL_api_key']]
         outpath = os.path.join(rawdir, raw)
+        Path(rawdir).mkdir(parents=True, exist_ok=True)
         print(r'Downloading {0} to {1}'.format(dl, outpath))
         download_url(dl, outpath) 
 
@@ -52,6 +54,7 @@ def get_all_adm0(previous=None):
                            config['geoboundaries']['all'])
     rawdir = os.path.join(config['dirs']['raw_data'],
                           config['geoboundaries']['subfolder'])
+    Path(rawdir).mkdir(parents=True, exist_ok=True)
     geodb_api_response = get_json(url)
     df = pd.DataFrame(geodb_api_response)
     if previous:
@@ -80,8 +83,6 @@ def get_all_adm0(previous=None):
 ##
 #
 #if __name__ == '__main__':
-#    import pdb
-#    pdb.set_trace()
 #    get_geoboundaries_adm(admLevel="ADM0")
 #    get_all_adm0()
 #    pass
