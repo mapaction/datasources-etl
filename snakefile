@@ -52,6 +52,14 @@ rule  extract_rivers_cod:
     shell:
         "extract_rivers_cod {params} {output}"
 
+rule  extract_seaports_cod:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['seaports']['cod']['raw'])
+    params:
+        raw_dir=config['dirs']['raw_data']
+    shell:
+        "extract_seaports_cod {params} {output}"
+
 # Extract GADM
 rule extract_adm0_gadm:
     output:
@@ -138,6 +146,15 @@ rule transform_rivers_cod:
         os.path.join(config['dirs']['processed_data'], config['rivers']['cod']['processed'])
     shell:
         "transform_rivers_cod {input} {output}"
+
+rule transform_seaports_cod:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['seaports']['cod']['raw']),
+        os.path.join(config['dirs']['schemas'], config['seaports']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['seaports']['cod']['processed'])
+    shell:
+        "transform_seaports_cod {input} {output}"
 
 ##Transform GADM
 rule transform_adm0_gadm:

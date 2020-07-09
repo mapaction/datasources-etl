@@ -1,9 +1,8 @@
-required:
-    - name_en
 properties:
     geometry_type:
         items:
             enum:
+                - MultiLineString
                 - LineString
         additionalItems: false
     crs:
