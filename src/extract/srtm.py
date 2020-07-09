@@ -343,7 +343,7 @@ def get_srtm30_for_country(download_folder: str, output_raster_uri: str,
     :param country_gpkg: geopackage of desired country outline (s1 ad0)
     :param nullvalue: 'no data' value of mosaicked raster
     :param force_download: if zip files must be downloaded again
-                           (e.g. when zip files corrrupted)
+                           (e.g. when zip files corrupted)
     """
 
     zip_download_folder = download_folder + os.sep + 'zip'
@@ -361,6 +361,7 @@ def get_srtm90_for_country(download_folder: str, output_raster_uri: str,
     """
     Fetches SRTM 30m data for a given country
     :param download_folder: where raw srtm contents to be downloaded/extracted
+                            zips are downloaded to a subfolder entitiled "zip"
     :param output_raster_uri: mosaic'ed data to end up here
     :param country_gpkg: path to polygon geopackage of desired country outline
     :param nullvalue: 'no data' value of mosaicked raster
