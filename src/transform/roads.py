@@ -1,9 +1,9 @@
-import sys	import sys
+import sys
 
-import geopandas as gpd	import geopandas as gpd
+import geopandas as gpd
 from jsonschema import validate	
 
-from utils.yaml_api import parse_yaml	from utils.yaml_api import parse_yaml
+from utils.yaml_api import parse_yaml
 from utils.osm import convert_osm_to_gpkg
 
 
