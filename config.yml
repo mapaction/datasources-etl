@@ -41,11 +41,6 @@ adm3:
   cod:
     raw: cod_adm3.zip
     processed: yem_admn_ad3_py_s3_unocha_pp.shp
-roads:
-  schema: roads_affected_area_py.yml
-  cod:
-    raw: cod_roads.zip
-    processed: yem_tran_rds_ln_s1_unocha_pp.shp
 rivers:
   schema: rivers_affected_area_py.yml
   cod:
@@ -56,7 +51,6 @@ seaports:
   cod:
     raw: cod_seaports.zip
     processed: yem_tran_por_pt_s1_unocha_pp.shp
-
 surrounding:
   schema: admin0_surrounding_countries_py.yml
   gadm:
@@ -64,10 +58,16 @@ surrounding:
     raw: gadm36.gpkg
     processed: yem_admn_ad0_py_s0_gadm_pp_surrounding_countries.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_gpkg.zip'
+  geoboundaries:
+    processed: yem_admn_ad0_py_s0_gedbnd_pp_surrounding_countries.shp
 geoboundaries:
+  # https://www.geoboundaries.org/api.html
   url: 'https://www.geoboundaries.org/gbRequest.html'
+  typ: 'TYP=SSCGS'
+  all: 'ISO=ALL&ADM=ADM0&TYP=SSCGS'
+  isofield: 'shapeISO'
+  subfolder: 'geoboundaries'
   raw: 'geobnd_'    # The Extract process will ammend the admX level and .zip 
-  knownlevels: 3 
   downloadURL_api_key: 'downloadURL'
   boundaryType_api_key: 'boundaryType'
   adm0:
