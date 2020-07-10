@@ -142,15 +142,6 @@ rule transform_adm3_cod:
     shell:
         "transform_adm3_cod {input} {output}"
 
-rule transform_roads_cod:
-    input:
-        os.path.join(config['dirs']['raw_data'], config['roads']['cod']['raw']),
-        os.path.join(config['dirs']['schemas'], config['roads']['schema'])
-    output:
-        os.path.join(config['dirs']['processed_data'], config['roads']['cod']['processed'])
-    shell:
-        "transform_roads_cod {input} {output}"
-
 rule transform_rivers_cod:
     input:
         os.path.join(config['dirs']['raw_data'], config['rivers']['cod']['raw']),
