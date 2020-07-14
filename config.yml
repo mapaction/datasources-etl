@@ -41,6 +41,16 @@ adm3:
   cod:
     raw: cod_adm3.zip
     processed: yem_admn_ad3_py_s3_unocha_pp.shp
+rivers:
+  schema: rivers_affected_area_py.yml
+  cod:
+    raw: cod_rivers.zip
+    processed: yem_phys_riv_ln_s1_unocha_pp.shp
+seaports:
+  schema: seaports_affected_area_py.yml
+  cod:
+    raw: cod_seaports.zip
+    processed: yem_tran_por_pt_s1_unocha_pp.shp
 surrounding:
   schema: admin0_surrounding_countries_py.yml
   gadm:
