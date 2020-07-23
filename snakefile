@@ -37,6 +37,22 @@ rule extract_adm3_cod:
         "extract_adm3_cod {params} {output}"
 
 
+rule  extract_rivers_cod:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['rivers']['cod']['raw'])
+    params:
+        raw_dir=config['dirs']['raw_data']
+    shell:
+        "extract_rivers_cod {params} {output}"
+
+rule  extract_seaports_cod:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['seaports']['cod']['raw'])
+    params:
+        raw_dir=config['dirs']['raw_data']
+    shell:
+        "extract_seaports_cod {params} {output}"
+
 # Extract GADM
 rule extract_adm0_gadm:
     output:
@@ -83,7 +99,6 @@ rule extract_geoboundaries:
     shell:
         "extract_geoboundaries"
 
-
 rule extract_osm_rivers_pol:
     input:
         os.path.join(
@@ -98,6 +113,9 @@ rule extract_osm_rivers_pol:
         "extract_osm_rivers_pol \"{params.url}\" \"{params.country}\" {input} {output}"
 
 
+rule extract_geoboundaries_adm0_all:
+    shell:
+        "extract_geoboundaries_adm0_all"
 
 ##TRANSFORM
 ##Transform HDX COD
@@ -137,6 +155,24 @@ rule transform_adm3_cod:
         os.path.join(config['dirs']['processed_data'], config['adm3']['cod']['processed'])
     shell:
         "transform_adm3_cod {input} {output}"
+
+rule transform_rivers_cod:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['rivers']['cod']['raw']),
+        os.path.join(config['dirs']['schemas'], config['rivers']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['rivers']['cod']['processed'])
+    shell:
+        "transform_rivers_cod {input} {output}"
+
+rule transform_seaports_cod:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['seaports']['cod']['raw']),
+        os.path.join(config['dirs']['schemas'], config['seaports']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['seaports']['cod']['processed'])
+    shell:
+        "transform_seaports_cod {input} {output}"
 
 ##Transform GADM
 rule transform_adm0_gadm:
@@ -204,6 +240,10 @@ rule transform_adm2_geoboundaries:
             config['geoboundaries']['adm2']['processed'])
     shell:
         "transform_adm2_geoboundaries {input} {output}"
+
+rule transform_surrounding_geoboundaries:
+    shell:
+        "transform_surrounding_geoboundaries"
 
 # Extract roads
 
