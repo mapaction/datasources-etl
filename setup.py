@@ -32,9 +32,8 @@ setuptools.setup(
             'transform_adm0_geoboundaries=transform.adm0:transform_geoboundaries',
             'transform_adm1_geoboundaries=transform.adm1:transform_geoboundaries',
             'transform_adm2_geoboundaries=transform.adm2:transform_geoboundaries',
-            'transform_adm2_geoboundaries=transform.adm2:transform_geoboundaries',
             'transform_surrounding_geoboundaries=transform.adm0_surround:transform_geoboundaries',
-            'extract_osm_rivers_pol=extract.osm_overpass:extract_osm_query',
+            'extract_osm=extract.osm_overpass:extract_osm_query',
             # Roads
             'extract_roads_cod=extract.cod:get_roads_snakemake',
             'transform_roads_cod=transform.roads:transform_cod',

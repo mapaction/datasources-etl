@@ -7,7 +7,7 @@ from utils.yaml_api import parse_yaml
 def extract_osm_query():
     osm_url = sys.argv[1] #"http://overpass-api.de/api/interpreter?"
     country = sys.argv[2] #'YE'
-    osm_schema = parse_yaml(sys.argv[3]) #parse_yaml('schemas/osm_tags_rivers_pol.yml')
+    osm_schema = parse_yaml(sys.argv[3]) #parse_yaml('schemas/osm_tags_lakes.yml')
     output_file = sys.argv[4] #'raw_data/osm_rivers_pol.xml'
     get_osm_xml(osm_url, osm_query(osm_schema, country), output_file)
 

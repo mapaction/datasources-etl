@@ -1,4 +1,5 @@
-osm_types: 
+osm_types:
+  - relation
   - way 
 tags:
   - waterway: 

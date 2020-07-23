@@ -99,19 +99,61 @@ rule extract_geoboundaries:
     shell:
         "extract_geoboundaries"
 
-rule extract_osm_rivers_pol:
+## OSM Extract ##
+
+rule extract_osm_rivers:
     input:
         os.path.join(
-            config['dirs']['schemas'], config['osm']['rivers_pol']['osm_tags'])
+            config['dirs']['schemas'], config['osm']['rivers']['osm_tags'])
     params:
         url=config['osm']['url'],
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['rivers_pol']['raw'])
+            config['dirs']['raw_data'], config['osm']['rivers']['raw'])
     shell:
-        "extract_osm_rivers_pol \"{params.url}\" \"{params.country}\" {input} {output}"
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
+rule extract_osm_lakes:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['lakes']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['lakes']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_admin:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['admin']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['admin']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_roads:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['roads']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['roads']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+####
 
 rule extract_geoboundaries_adm0_all:
     shell:
