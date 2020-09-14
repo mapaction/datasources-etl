@@ -297,14 +297,6 @@ rule extract_roads_cod:
     shell:
         "extract_roads_cod {params} {output}"
 
-rule extract_roads_osm:
-    output:
-        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw'])
-    params:
-        url=config['roads']['osm']['url']
-    shell:
-        "wget \"{params}\" -O {output}"
-
 # Transform roads
 
 rule transform_roads_cod:

@@ -1,4 +1,4 @@
-git gitproperties:
+properties:
     geometry_type:
         items:
             enum:
