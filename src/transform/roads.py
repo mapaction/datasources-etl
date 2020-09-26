@@ -26,6 +26,7 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
         # COD data has some NAs
         df_roads = df_roads[df_roads['geometry'].notna()]
         schema_mapping = {'TYPE': 'fclass'}
+# TODO need to convert from XML to GPKG rather than OSM to GPKG
     elif source == "osm":
         df_roads = convert_osm_to_gpkg(input_filename, 'osm_roads.gpkg', 'lines')
         schema_mapping = {'highway': 'fclass'}
