@@ -1,0 +1,6 @@
+osm_types: 
+  - relation
+  - way
+tags:
+  - boundary:
+    - administrative
