@@ -1,0 +1,11 @@
+osm_types: 
+  - relation
+  - way
+tags:
+  - water: 
+  - natural:
+    - water
+  - landuse:
+    - reservoir
+  - waterway:
+    - riverbank

@@ -99,6 +99,62 @@ rule extract_geoboundaries:
     shell:
         "extract_geoboundaries"
 
+## OSM Extract ##
+
+rule extract_osm_rivers:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['rivers']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rivers']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_lakes:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['lakes']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['lakes']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_admin:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['admin']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['admin']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_roads:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['roads']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['roads']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+####
+
 rule extract_geoboundaries_adm0_all:
     shell:
         "extract_geoboundaries_adm0_all"
@@ -240,14 +296,6 @@ rule extract_roads_cod:
         raw_dir=config['dirs']['raw_data']
     shell:
         "extract_roads_cod {params} {output}"
-
-rule extract_roads_osm:
-    output:
-        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw'])
-    params:
-        url=config['roads']['osm']['url']
-    shell:
-        "wget \"{params}\" -O {output}"
 
 # Transform roads
 
