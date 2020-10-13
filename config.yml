@@ -120,3 +120,7 @@ srtm:
     processed: yem_elev_dem_ras_s1_srtm_pp_90m.tif
 wfp:
   url: 'https://geonode.wfp.org/geoserver/wfs?srsName=EPSG%3A4326&typename=geonode%3Awld_trs_airports_wfp&outputFormat=json&service=WFS&request=GetFeature'
+internalBnd:
+  schema: 'admin1_internal_boundaries_ln.yml' 
+  adm1: 
+    processed: 'yem_admn_ad1_ln_s0_geobnd_pp.shp'

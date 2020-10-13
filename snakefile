@@ -78,6 +78,8 @@ rule extract_adm2_gadm:
     shell:
         "curl {params} -o {output} -O -J -L"
 
+# Following should negate the need for the above GADM rules since the world 
+# file is processed.
 rule extract_world_gadm:
     # Note. By removing the output Snakemake will always re-run the process
     # this means we could program a test into the extract process if
@@ -338,3 +340,15 @@ rule transform_roads_osm:
         os.path.join(config['dirs']['processed_data'], config['roads']['osm']['processed'])
     shell:
         "transform_roads_osm {input} {output}"
+
+
+# Obtain internal boundary lines from Admin polygons (Transform)
+# Adm1
+rule transform_internal_boundaries:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm1']['processed']),
+        os.path.join(config['dirs']['schemas'], config['internalBnd']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['internalBnd']['adm1']['processed'])
+    shell:
+        "transform_internal_boundaries {input} {output}"
