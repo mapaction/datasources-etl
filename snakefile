@@ -160,6 +160,7 @@ rule extract_geoboundaries_adm0_all:
         "extract_geoboundaries_adm0_all"
 
 # Extract SRTM
+# TODO Note: SRTM Snakemake rule does not currently work - functionality has been parked for SDS PoC
 rule extract_srtm30:
     # not sure how to employ (optional) keyword arguments into snakemake
     params:
