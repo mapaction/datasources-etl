@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import zipfile
 import glob
@@ -25,8 +26,10 @@ def get_srtm30_root_url():
 ###############################################################################
 def get_earthdata_login_credentials():
     """
-    Tuple of (username, password) for logging into NASA EarthData
+    Tuple of (username, password) for logging into NASA EarthData. Ideally,
+    this will be handled somewhere more secure!
     """
+    # TODO: put username and password somewhere secure!
     username = "mapaction"
     password = "Mapping1066"
 
@@ -188,8 +191,7 @@ def fetch_srtm_30_zips(destination_folder: str, country_gpkg=None,
     zip_list_out = []
 
     username, password = get_earthdata_login_credentials()
-#    session = requests_api.SessionWithHeaderRedirection(username, password)
-    session = SessionWithHeaderRedirection(username, password)
+    session = requests_api.SessionWithHeaderRedirection(username, password)
 
     for zipf in determine_srtm_30_zip(country_gpkg=country_gpkg):
         zip_web_uri = srtm_root_uri + zipf
@@ -384,12 +386,55 @@ def mosaic_rasters(input_raster_uri_list, output_geotiff_uri, nullvalue=-9999):
 
 
 ###############################################################################
-def get_srtm30_for_country(download_folder: str, output_geotiff_uri: str,
+def transform_raster_to_metre_projection(country_geotiff_uri: str,
+                                         destination_epsg: str,
+                                         reprojected_geotiff_uri: str):
+    """
+    Mosaicked(or single tile) SRTM files are projected in WGS84 degrees.
+    To be able to calculate slope, we need the raster in a local projection
+    in metres
+    :param country_geotiff_uri: the geotiff raster for the country
+    :param destination_epsg: the target projection as string "EPSG:#####"
+    :param reprojected_geotiff_uri: the raster for the country in the new
+           projection
+    """
+
+    with rasterio.open(country_geotiff_uri) as src:
+        dst_transform, dst_width, dst_height = \
+            warp.calculate_default_transform(src.crs, destination_epsg, src.width,
+                                             src.height, *src.bounds)
+        src_data = src.read(1)
+        src_meta = src.meta
+        src_crs = src.crs
+        src_transform = src.transform
+
+    dst_meta = src_meta.copy()
+    dst_meta.update(crs=destination_epsg)
+    dst_meta.update(transform=dst_transform)
+    dst_meta.update(width=dst_width)
+    dst_meta.update(height=dst_height)
+
+    with rasterio.open(reprojected_geotiff_uri, 'w', **dst_meta) as dst:
+        warp.reproject(source=src_data,
+                       destination=rasterio.band(dst, 1),
+                       src_transform=src_transform,
+                       src_crs=src_crs,
+                       dst_transform=dst_transform,
+                       dst_crs=destination_epsg,
+                       resampling=warp.Resampling.nearest)
+
+
+###############################################################################
+def get_srtm30_for_country(download_folder: str, destination_epsg: str,
+                           output_geotiff_uri: str,
                            country_gpkg=None, nullvalue=-9999,
                            force_download=False):
     """
-    Fetches SRTM 30m data for a given country
+    Fetches SRTM 30m data for a given country. Defaults to Yemen
+    Have exposed null value and  a force_download flag for rerunning but
+    they aren't used in the snakemake setup
     :param download_folder: where raw srtm contents to be downloaded/extracted
+    :param destination_epsg: string of "EPSG:#####" for desired projection
     :param output_geotiff_uri: mosaic'ed data to end up here
     :param country_gpkg: geopackage of desired country outline (s1 ad0)
     :param nullvalue: 'no data' value of mosaicked raster
@@ -403,17 +448,25 @@ def get_srtm30_for_country(download_folder: str, output_geotiff_uri: str,
                                          force_download=force_download)
     srtm30_hgt_list = unzip_raster_to_folder(srtm30_zip_list, download_folder,
                                              ext=".hgt")
-    mosaic_rasters(srtm30_hgt_list, output_geotiff_uri, nullvalue=nullvalue)
+    temp_mosaic_uri = '_wgs84'.join(os.path.splitext(output_geotiff_uri))
+    mosaic_rasters(srtm30_hgt_list, temp_mosaic_uri, nullvalue=nullvalue)
+    transform_raster_to_metre_projection(temp_mosaic_uri, destination_epsg,
+                                         output_geotiff_uri)
+    # os.remove(temp_mosaic_uri)
 
 
 ###############################################################################
-def get_srtm90_for_country(download_folder: str, output_geotiff_uri: str,
+def get_srtm90_for_country(download_folder: str, destination_epsg: str,
+                           output_geotiff_uri: str,
                            country_gpkg=None, nullvalue=-9999,
                            force_download=False):
     """
-    Fetches SRTM 30m data for a given country
+    Fetches SRTM 90m data for a given country. Have exposed null value and
+    a force_download flag for rerunning but they aren't used in the snakemake
+    setup
     :param download_folder: where raw srtm contents to be downloaded/extracted
                             zips are downloaded to a subfolder entitiled "zip"
+    :param destination_epsg: string of "EPSG:#####" for desired projection
     :param output_geotiff_uri: mosaic'ed data to end up here
     :param country_gpkg: path to polygon geopackage of desired country outline
     :param nullvalue: 'no data' value of mosaicked raster
@@ -426,4 +479,41 @@ def get_srtm90_for_country(download_folder: str, output_geotiff_uri: str,
                                          country_gpkg=country_gpkg,
                                          force_download=force_download)
     srtm90_tif_list = unzip_tif_to_folder(srtm90_zip_list, download_folder)
-    mosaic_rasters(srtm90_tif_list, output_geotiff_uri, nullvalue=nullvalue)
+    temp_mosaic_uri = '_wgs84'.join(os.path.splitext(output_geotiff_uri))
+    mosaic_rasters(srtm90_tif_list, temp_mosaic_uri, nullvalue=nullvalue)
+    transform_raster_to_metre_projection(temp_mosaic_uri, destination_epsg,
+                                         output_geotiff_uri)
+    # os.remove(temp_mosaic_uri)
+
+
+###############################################################################
+def get_srtm30_snakemake():
+    """
+    Shallow call for snakemake to retrieve SRTM 30 data for a given country.
+    If no country shapefile/geopackage supplied, then defaults to Yemen.
+    Note: default null value and force download not implemented here.
+    """
+
+    if len(sys.argv[1:]) == 3:
+        get_srtm30_for_country(sys.argv[1], sys.argv[2], sys.argv[3])
+    elif len(sys.argv[1:]) == 4:
+        get_srtm30_for_country(sys.argv[1], sys.argv[2], sys.argv[3],
+                               country_gpkg=sys.argv[4])
+
+
+###############################################################################
+def get_srtm90_snakemake():
+    """
+    Shallow call for snakemake to retrieve SRTM 90 data for a given country.
+    If no country shapefile/geopackage supplied, then defaults to Yemen.
+    Note: default null value and force download not implemented here.
+    """
+
+    if len(sys.argv[1:]) == 3:
+        get_srtm90_for_country(sys.argv[1], sys.argv[2], sys.argv[3])
+    elif len(sys.argv[1:]) == 4:
+        get_srtm90_for_country(sys.argv[1], sys.argv[2], sys.argv[3],
+                               country_gpkg=sys.argv[4])
+
+
+###############################################################################
