@@ -16,6 +16,7 @@ setuptools.setup(
             'extract_adm3_cod=extract.cod:get_adm3_snakemake',
             'extract_rivers_cod=extract.cod:get_rivers_snakemake',
             'extract_seaports_cod=extract.cod:get_seaports_snakemake',
+            'extract_global_seaports_cod=extract.cod:get_global_seaports_snakemake',
             'extract_world_gadm=extract.gadm:get_world',
             'extract_geoboundaries=extract.geoboundaries:get_geoboundaries_adm',
             'extract_geoboundaries_adm0_all=extract.geoboundaries:get_all_adm0',
