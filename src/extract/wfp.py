@@ -2,55 +2,37 @@ import requests
 import geopandas as gpd
 import pandas as pd
 
-r = requests.get("https://geonode.wfp.org/geoserver/wfs?srsName=EPSG%3A4326&typename=geonode%3Awld_trs_airports_wfp&outputFormat=json&service=WFS&request=GetFeature")
-r.raise_for_status()
+next_link = "https://geonode.wfp.org/geoserver/wfs?srsName=EPSG%3A4326&typename=geonode%3Awld_trs_airports_wfp&outputFormat=json&service=WFS&request=GetFeature"
+iso3 = 'YEM'
+# df = pd.DataFrame(columns=["id", "name", "lat", "lon", "country", "region", "municipality"])
 
-data = r.json()
+# Loop through pages and pull data from the API
+session = requests.Session()
 
-df = pd.json_normalize(data['features'])
-print(df)
-df = df.drop(columns=[
-    'geometry',
-    'geometry.type',
-    'geometry.coordinates',
-    'properties.nameshort',
-    'properties.namelong',
-    'properties.namealt',
-    'properties.city',
-    'properties.icao',
-    'properties.iata',
-    'properties.apttype',
-    'properties.aptclass',
-    'properties.authority',
-    'properties.status',
-    'properties.dmg',
-    'properties.rwpaved',
-    'properties.rwlengthm',
-    'properties.rwlengthf',
-    'properties.elevm',
-    'properties.elevf',
-    'properties.humuse',
-    'properties.humoperatedby',
-    'properties.locprecision',
-    'properties.iso3',
-    'properties.iso3_op',
-    'properties.country',
-    'properties.lastcheckdate',
-    'properties.remarks',
-    'properties.url_lca',
-    'properties.source',
-    'properties.createdate',
-    'properties.updatedate',
-    'properties.geonameid'])
+print(next_link)
+request = session.get(url=next_link)
+json = request.json()
 
-gdf = gpd.GeoDataFrame(
-    df, geometry=gpd.points_from_xy(df["properties.longitude"], df["properties.latitude"]))
+# Loop through flows and append data to dataframe
+# print(json)
+airports = json["features"]
+# print(airports)
+airport_list = []
+for airport in airports:
+    airport_list.append(airport["properties"])
 
-gdf = gdf.drop(columns=[
-    'properties.longitude',
-    'properties.latitude'])
+airport_df = pd.DataFrame(airport_list)
 
-for col in gdf.columns:
-    print(col)
+apt_yem = airport_df[airport_df['iso3'] == iso3]
 
-gdf.to_file("../../raw_data/wfp_airports.shp")
+airport_pt = gpd.GeoDataFrame(apt_yem,
+    geometry=gpd.points_from_xy(apt_yem.longitude, apt_yem.latitude))
+
+# Set CRS
+airport_pt.crs = {'init': 'epsg:4326'}
+
+# Export to file
+# airport_pt.to_csv("../../raw_data/wfp_airports.csv", index=False)
+# airport_pt.to_file("../../raw_data/wfp_airports.gpkg", driver="GPKG")
+airport_pt.to_file("../../raw_data/wfp_airports.shp", encoding='utf-8')
+airport_pt.to_file("../../processed_data/yem_tran_air_pt_s1_wfp_pp.shp", encoding='utf-8')
