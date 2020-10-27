@@ -86,6 +86,8 @@ rule extract_adm2_gadm:
     shell:
         "curl {params} -o {output} -O -J -L"
 
+# Following should negate the need for the above GADM rules since the world 
+# file is processed.
 rule extract_world_gadm:
     # Note. By removing the output Snakemake will always re-run the process
     # this means we could program a test into the extract process if
@@ -107,9 +109,87 @@ rule extract_geoboundaries:
     shell:
         "extract_geoboundaries"
 
+## OSM Extract ##
+
+rule extract_osm_rivers:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['rivers']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rivers']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_lakes:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['lakes']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['lakes']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_admin:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['admin']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['admin']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_roads:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['roads']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['roads']['raw'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+####
+
 rule extract_geoboundaries_adm0_all:
     shell:
         "extract_geoboundaries_adm0_all"
+
+# Extract SRTM
+# TODO Note: SRTM Snakemake rule does not currently work - functionality has been parked for SDS PoC
+rule extract_srtm30:
+    # not sure how to employ (optional) keyword arguments into snakemake
+    params:
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir'])
+        config['constants']['crs']
+    output:
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed_wgs84'])
+    shell:
+        "extract_srtm30 {params} {output}"
+
+rule extract_srtm90:
+    # not sure how to employ (optional) keyword arguments into snakemake
+    params:
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir'])
+        config['constants']['crs']
+    output:
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed_wgs84'])
+    shell:
+        "extract_srtm90 {params} {output}"
 
 ##TRANSFORM
 ##Transform HDX COD
@@ -249,14 +329,6 @@ rule extract_roads_cod:
     shell:
         "extract_roads_cod {params} {output}"
 
-rule extract_roads_osm:
-    output:
-        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw'])
-    params:
-        url=config['roads']['osm']['url']
-    shell:
-        "wget \"{params}\" -O {output}"
-
 # Transform roads
 
 rule transform_roads_cod:
@@ -276,3 +348,15 @@ rule transform_roads_osm:
         os.path.join(config['dirs']['processed_data'], config['roads']['osm']['processed'])
     shell:
         "transform_roads_osm {input} {output}"
+
+
+# Obtain internal boundary lines from Admin polygons (Transform)
+# Adm1
+rule transform_internal_boundaries:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm1']['processed']),
+        os.path.join(config['dirs']['schemas'], config['internalBnd']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['internalBnd']['adm1']['processed'])
+    shell:
+        "transform_internal_boundaries {input} {output}"
