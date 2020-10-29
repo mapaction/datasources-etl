@@ -46,15 +46,18 @@ osm:
   url: 'http://overpass-api.de/api/interpreter?'
   lakes:
     osm_tags: 'osm_tags_lakes.yml'
-    raw: osm_lakes.xml
+    raw_osm: osm_lakes.xml
+    raw_shp: osm_lakes.shp
     processed: yem_phys_lak_py_s1_osm_pp.shp
   rivers:
     osm_tags: 'osm_tags_rivers.yml'
-    raw: osm_rivers.xml
+    raw_osm: osm_rivers.xml
+    raw_shp: osm_rivers.shp
     processed: yem_phys_riv_ln_s1_osm_pp.shp
   roads:
     osm_tags: 'osm_tags_roads.yml'
-    raw: osm_roads.xml
+    raw_osm: osm_roads.xml
+    raw_shp: osm_roads.shp
     processed: yem_tran_rds_ln_s1_osm_pp.shp
   admin:
     osm_tags: 'osm_tags_admin.yml'

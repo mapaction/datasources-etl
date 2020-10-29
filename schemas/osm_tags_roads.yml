@@ -1,5 +1,7 @@
 osm_types: 
   - way
+geom_type:
+  linestrings
 tags:
   - highway:
     - motorway

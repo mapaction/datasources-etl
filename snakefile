@@ -112,7 +112,9 @@ rule extract_osm_rivers:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['rivers']['raw'])
+            config['dirs']['raw_data'], config['osm']['rivers']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rivers']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -125,7 +127,7 @@ rule extract_osm_lakes:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['lakes']['raw'])
+            config['dirs']['raw_data'], config['osm']['lakes']['raw_osm'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -151,7 +153,7 @@ rule extract_osm_roads:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['roads']['raw'])
+            config['dirs']['raw_data'], config['osm']['roads']['raw_osm'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -165,21 +167,23 @@ rule extract_geoboundaries_adm0_all:
 # TODO Note: SRTM Snakemake rule does not currently work - functionality has been parked for SDS PoC
 rule extract_srtm30:
     # not sure how to employ (optional) keyword arguments into snakemake
-    params:
+    input:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir'])
-        config['constants']['crs']
+    params:
+        config=config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed_wgs84'])
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed'])
     shell:
         "extract_srtm30 {params} {output}"
 
 rule extract_srtm90:
     # not sure how to employ (optional) keyword arguments into snakemake
-    params:
+    input:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir'])
-        config['constants']['crs']
+    params:
+        config=config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed_wgs84'])
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
     shell:
         "extract_srtm90 {params} {output}"
 

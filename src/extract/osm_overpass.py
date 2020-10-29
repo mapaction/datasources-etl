@@ -3,13 +3,17 @@ import requests
 import json
 
 from utils.yaml_api import parse_yaml
+from utils.osm import convert_osm2shape
 
 def extract_osm_query():
     osm_url = sys.argv[1] #"http://overpass-api.de/api/interpreter?"
     country = sys.argv[2] #'YE'
     osm_schema = parse_yaml(sys.argv[3]) #parse_yaml('schemas/osm_tags_lakes.yml')
-    output_file = sys.argv[4] #'raw_data/osm_rivers_pol.xml'
-    get_osm_xml(osm_url, osm_query(osm_schema, country), output_file)
+    geom_type = parse_yaml(sys.argv[3])['geom_type']
+    osm_output_file = sys.argv[4] #'raw_data/osm_rivers_pol.xml'
+    shp_output_file = sys.argv[5] #'raw_data/osm_rivers_pol.xml'
+    get_osm_xml(osm_url, osm_query(osm_schema, country), osm_output_file)
+    convert_osm2shape(osm_output_file,shp_output_file,geom_type)
 
 def osm_query(osm_yml: dict, iso2_country: str):
     """ Country based query using Overpass Query Language.  Using key value pairs,
@@ -67,6 +71,9 @@ def osm_query(osm_yml: dict, iso2_country: str):
 
 
 def get_osm_xml(api_url, osm_query, output_file):
+    download_url(api_url, output_file, paramters={'data': osm_query})
+    """
+    # Commented out as using requests wrapped in method in utils/requests_api.py
     response  = requests.get(api_url,
                                 params={'data': osm_query})
     data = response.text
@@ -75,3 +82,4 @@ def get_osm_xml(api_url, osm_query, output_file):
             file.write(response.text)
     else:
         pass
+    """
