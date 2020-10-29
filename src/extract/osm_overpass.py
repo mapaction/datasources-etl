@@ -4,6 +4,7 @@ import json
 
 from utils.yaml_api import parse_yaml
 from utils.osm import convert_osm2shape
+from utils.requests_api import download_url
 
 def extract_osm_query():
     osm_url = sys.argv[1] #"http://overpass-api.de/api/interpreter?"
@@ -69,9 +70,8 @@ def osm_query(osm_yml: dict, iso2_country: str):
                    + main_query + recurse_out)
     return final_query
 
-
 def get_osm_xml(api_url, osm_query, output_file):
-    download_url(api_url, output_file, paramters={'data': osm_query})
+    download_url(api_url, output_file, parameters={'data': osm_query})
     """
     # Commented out as using requests wrapped in method in utils/requests_api.py
     response  = requests.get(api_url,

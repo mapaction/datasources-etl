@@ -2,7 +2,7 @@ osm_types:
   - relation
   - way
 geom_type:
-  linestrings
+  lines
 tags:
   - waterway: 
     - river

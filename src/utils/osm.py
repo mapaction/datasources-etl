@@ -1,6 +1,7 @@
 import os
 import subprocess
-
+import ogr
+import gdal
 import geopandas as gpd
 
 def convert_osm_to_gpkg(input_filename: str, tmp_filename: str, layer_name: str):
@@ -19,7 +20,7 @@ def convert_osm2shape(in_file, out_file, geom_type='multipolygons'):
     # Dict of possible geometry types in OSM XML, same names of layers in temp geopackage
     geom_types = ['points', 'lines', 'multilinestrings', 'multipolygons', 'other_relations']
     if geom_type not in geom_types:
-        raise ValueError("Invalid geom type. Expected one of: %s" % geom_types)
+        raise ValueError("Invalid geom_type. Expected one of: %s" % geom_types)
 
     # Set output geometry type for shapefile
     out_driver = ogr.GetDriverByName('ESRI Shapefile')
