@@ -178,14 +178,13 @@ rule extract_srtm30:
 
 rule extract_srtm90:
     # not sure how to employ (optional) keyword arguments into snakemake
-    input:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir'])
     params:
-        config=config['constants']['crs']
+        download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir']),
+        config=config['constants']['crs'],
     output:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
     shell:
-        "extract_srtm90 {params} {output}"
+        "extract_srtm90 {output} {params} "
 
 ##TRANSFORM
 ##Transform HDX COD
