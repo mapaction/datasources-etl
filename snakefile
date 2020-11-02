@@ -167,14 +167,13 @@ rule extract_geoboundaries_adm0_all:
 # TODO Note: SRTM Snakemake rule does not currently work - functionality has been parked for SDS PoC
 rule extract_srtm30:
     # not sure how to employ (optional) keyword arguments into snakemake
-    input:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir'])
     params:
+        download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir']),
         config=config['constants']['crs']
     output:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed'])
     shell:
-        "extract_srtm30 {params} {output}"
+        "extract_srtm30 {output} {params}"
 
 rule extract_srtm90:
     # not sure how to employ (optional) keyword arguments into snakemake
@@ -184,7 +183,7 @@ rule extract_srtm90:
     output:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
     shell:
-        "extract_srtm90 {output} {params} "
+        "extract_srtm90 {output} {params}"
 
 ##TRANSFORM
 ##Transform HDX COD
