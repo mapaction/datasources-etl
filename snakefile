@@ -166,22 +166,22 @@ rule extract_geoboundaries_adm0_all:
 rule extract_srtm30:
     # not sure how to employ (optional) keyword arguments into snakemake
     params:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir'])
-        config['constants']['crs']
+        download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir']),
+        config=config['constants']['crs']
     output:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed'])
     shell:
-        "extract_srtm30 {params} {output}"
+        "extract_srtm30 {output} {params}"
 
 rule extract_srtm90:
     # not sure how to employ (optional) keyword arguments into snakemake
     params:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir'])
-        config['constants']['crs']
+        download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir']),
+        config=config['constants']['crs'],
     output:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
     shell:
-        "extract_srtm90 {params} {output}"
+        "extract_srtm90 {output} {params}"
 
 ##TRANSFORM
 ##Transform HDX COD
