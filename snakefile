@@ -169,7 +169,7 @@ rule extract_srtm30:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir'])
         config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed_wgs84'])
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed'])
     shell:
         "extract_srtm30 {params} {output}"
 
@@ -179,7 +179,7 @@ rule extract_srtm90:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir'])
         config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed_wgs84'])
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
     shell:
         "extract_srtm90 {params} {output}"
 
