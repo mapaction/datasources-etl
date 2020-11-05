@@ -1,0 +1,15 @@
+required:
+    - name_en
+    - pcode
+properties:
+    geometry_type:
+        items:
+            enum:
+                - MultiPolygon
+                - Polygon
+        additionalItems: false
+    crs:
+        items:
+            enum:
+                - EPSG:2090
+        additionalItems: false

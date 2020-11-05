@@ -30,6 +30,7 @@ setuptools.setup(
             'transform_adm0_gadm=transform.adm0:transform_gadm',
             'transform_adm1_gadm=transform.adm1:transform_gadm',
             'transform_adm2_gadm=transform.adm2:transform_gadm',
+            'transform_gadm_adm=transform.adm_gadm:transform_gadm',
             'transform_surrounding_gadm=transform.adm0_surround:transform',
             'transform_adm0_geoboundaries=transform.adm0:transform_geoboundaries',
             'transform_adm1_geoboundaries=transform.adm1:transform_geoboundaries',

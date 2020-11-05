@@ -8,7 +8,9 @@ constants:
   crs: EPSG:2090
 adm0:
   schema: admin0_affected_area_py.yml
-  gadm:
+  # The GADM urls are all the same. The geopackage includes all available
+  # levels. 
+  gadm: 
     raw: gadm_adm0.zip
     processed: yem_admn_ad0_py_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
@@ -73,6 +75,12 @@ seaports:
   cod:
     raw: cod_seaports.zip
     processed: yem_tran_por_pt_s1_unocha_pp.shp
+gadm:
+  schema: gadm_admin_py.yml
+  raw: GADM_ADM.zip
+  # Use variable substitution so no need to change the ISO3 code
+  # See Snakemake extract_gadm_adm
+  url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_{ISO3}_gpkg.zip'
 surrounding:
   schema: admin0_surrounding_countries_py.yml
   gadm:
