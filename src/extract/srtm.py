@@ -189,15 +189,20 @@ def fetch_srtm_30_zips(destination_folder: str, country_gpkg=None,
 
     srtm_root_uri = get_srtm30_root_url()
     zip_list_out = []
-
-    username, password = get_earthdata_login_credentials()
-    session = requests_api.SessionWithHeaderRedirection(username, password)
+    session = None
 
     for zipf in determine_srtm_30_zip(country_gpkg=country_gpkg):
         zip_web_uri = srtm_root_uri + zipf
         zip_local_uri = os.path.join(destination_folder, zipf)
         # TODO: skip file if (web hosted) zip file not found
         if force_download or not os.path.exists(zip_local_uri):
+            print(zip_local_uri)
+            logger.info("Downloading %s to %s" %
+                        (zip_web_uri, zip_local_uri))
+            if session is None:
+                username, password = get_earthdata_login_credentials()
+                session = requests_api.SessionWithHeaderRedirection(username,
+                                                                    password)
             # if is_valid_accessible_url(zip_web_uri):
             response = session.get(zip_web_uri, stream=True)
             # raise an exception in case of http errors
@@ -413,6 +418,7 @@ def transform_raster_to_metre_projection(country_geotiff_uri: str,
     dst_meta.update(transform=dst_transform)
     dst_meta.update(width=dst_width)
     dst_meta.update(height=dst_height)
+    dst_meta.update(compress='lzw')
 
     with rasterio.open(reprojected_geotiff_uri, 'w', **dst_meta) as dst:
         warp.reproject(source=src_data,
@@ -425,8 +431,8 @@ def transform_raster_to_metre_projection(country_geotiff_uri: str,
 
 
 ###############################################################################
-def get_srtm30_for_country(download_folder: str, destination_epsg: str,
-                           output_geotiff_uri: str,
+def get_srtm30_for_country(output_geotiff_uri: str, download_folder: str,
+                           destination_epsg: str,
                            country_gpkg=None, nullvalue=-9999,
                            force_download=False):
     """
@@ -452,12 +458,12 @@ def get_srtm30_for_country(download_folder: str, destination_epsg: str,
     mosaic_rasters(srtm30_hgt_list, temp_mosaic_uri, nullvalue=nullvalue)
     transform_raster_to_metre_projection(temp_mosaic_uri, destination_epsg,
                                          output_geotiff_uri)
-    # os.remove(temp_mosaic_uri)
+    os.remove(temp_mosaic_uri)
 
 
 ###############################################################################
-def get_srtm90_for_country(download_folder: str, destination_epsg: str,
-                           output_geotiff_uri: str,
+def get_srtm90_for_country(output_geotiff_uri: str, download_folder: str,
+                           destination_epsg: str,
                            country_gpkg=None, nullvalue=-9999,
                            force_download=False):
     """
@@ -517,3 +523,15 @@ def get_srtm90_snakemake():
 
 
 ###############################################################################
+def test_strm30_yemen():
+
+    download_folder = r"/Users/leon/Documents/MapAction/SoftwareDevelopment/Ganymede/data/working/srtm30"
+    destination_epsg = "EPSG:2090"
+    output_geotiff_uri = r"/Users/leon/Documents/MapAction/SoftwareDevelopment/Ganymede/data/YEM_SRTM30.tif"
+    country_gpkg = r"/Users/leon/Documents/MapAction/SoftwareDevelopment/Ganymede/data/gadm36_YEM_gpkg/gadm36_YEM.gpkg"
+    nullvalue = -9999
+    force_download = False
+
+    get_srtm30_for_country(output_geotiff_uri, download_folder,
+                           destination_epsg, country_gpkg=country_gpkg,
+                           nullvalue=nullvalue, force_download=force_download)
