@@ -78,6 +78,16 @@ rule extract_adm2_gadm:
     shell:
         "curl {params} -o {output} -O -J -L"
 
+# Generic rule to extract all GADM admin levels for a particular country.
+rule extract_gadm_adm:
+    output:
+        os.path.join(config['dirs']['raw_data'],
+        "{0}_{1}".format(config['constants']['ISO3'], config['gadm']['raw']))
+    params:
+        url=config["gadm"]["url"].format(ISO3=config["constants"]["ISO3"])
+    shell:
+        "curl {params} -o {output} -O -J -L"
+
 # Following should negate the need for the above GADM rules since the world 
 # file is processed.
 rule extract_world_gadm:
@@ -272,6 +282,16 @@ rule transform_surrounding_gadm:
         os.path.join(config['dirs']['processed_data'], config['surrounding']['gadm']['processed'])
     shell:
         "transform_surrounding_gadm"
+
+# Generic transform all GADM admin levels included within the download.
+rule transform_gadm_adm:
+    input:
+        os.path.join(config['dirs']['raw_data'],
+        "{0}_{1}".format(config['constants']['ISO3'], config['gadm']['raw'])), 
+        os.path.join(config['dirs']['schemas'],config['gadm']['schema']),
+        config['dirs']['processed_data']
+    shell:
+        "transform_gadm_adm {input}"
 
 # Transform Geoboundaries
 rule transform_adm0_geoboundaries:
