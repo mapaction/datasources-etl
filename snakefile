@@ -86,6 +86,16 @@ rule extract_adm2_gadm:
     shell:
         "curl {params} -o {output} -O -J -L"
 
+# Generic rule to extract all GADM admin levels for a particular country.
+rule extract_gadm_adm:
+    output:
+        os.path.join(config['dirs']['raw_data'],
+        "{0}_{1}".format(config['constants']['ISO3'], config['gadm']['raw']))
+    params:
+        url=config["gadm"]["url"].format(ISO3=config["constants"]["ISO3"])
+    shell:
+        "curl {params} -o {output} -O -J -L"
+
 # Following should negate the need for the above GADM rules since the world 
 # file is processed.
 rule extract_world_gadm:
@@ -174,22 +184,22 @@ rule extract_geoboundaries_adm0_all:
 rule extract_srtm30:
     # not sure how to employ (optional) keyword arguments into snakemake
     params:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir'])
-        config['constants']['crs']
+        download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir']),
+        config=config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed_wgs84'])
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed'])
     shell:
-        "extract_srtm30 {params} {output}"
+        "extract_srtm30 {output} {params}"
 
 rule extract_srtm90:
     # not sure how to employ (optional) keyword arguments into snakemake
     params:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir'])
-        config['constants']['crs']
+        download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir']),
+        config=config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed_wgs84'])
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
     shell:
-        "extract_srtm90 {params} {output}"
+        "extract_srtm90 {output} {params}"
 
 ##TRANSFORM
 ##Transform HDX COD
@@ -280,6 +290,16 @@ rule transform_surrounding_gadm:
         os.path.join(config['dirs']['processed_data'], config['surrounding']['gadm']['processed'])
     shell:
         "transform_surrounding_gadm"
+
+# Generic transform all GADM admin levels included within the download.
+rule transform_gadm_adm:
+    input:
+        os.path.join(config['dirs']['raw_data'],
+        "{0}_{1}".format(config['constants']['ISO3'], config['gadm']['raw'])), 
+        os.path.join(config['dirs']['schemas'],config['gadm']['schema']),
+        config['dirs']['processed_data']
+    shell:
+        "transform_gadm_adm {input}"
 
 # Transform Geoboundaries
 rule transform_adm0_geoboundaries:
