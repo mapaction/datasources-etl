@@ -177,7 +177,7 @@ rule extract_srtm90:
     # not sure how to employ (optional) keyword arguments into snakemake
     params:
         download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir']),
-        config=config['constants']['crs'],
+        config=config['constants']['crs']
     output:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
     shell:
