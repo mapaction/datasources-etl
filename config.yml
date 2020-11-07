@@ -75,6 +75,11 @@ seaports:
   cod:
     raw: cod_seaports.zip
     processed: yem_tran_por_pt_s1_unocha_pp.shp
+seaports_global:
+  schema: seaports_affected_area_py.yml
+  cod:
+    raw: cod_global_seaports.zip
+    processed: yem_tran_por_pt_s1_worldportindex_pp.shp
 gadm:
   schema: gadm_admin_py.yml
   raw: GADM_ADM.zip

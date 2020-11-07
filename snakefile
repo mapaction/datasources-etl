@@ -53,6 +53,14 @@ rule  extract_seaports_cod:
     shell:
         "extract_seaports_cod {params} {output}"
 
+rule  extract_global_seaports_cod:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['seaports_global']['cod']['raw'])
+    params:
+        raw_dir=config['dirs']['raw_data']
+    shell:
+        "extract_global_seaports_cod {params} {output}"
+
 # Extract GADM
 rule extract_adm0_gadm:
     output:
