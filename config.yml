@@ -54,14 +54,30 @@ osm:
     raw_osm: osm_rivers.xml
     raw_shp: osm_rivers.shp
     processed: yem_phys_riv_ln_s1_osm_pp.shp
+  rail:
+    osm_tags: 'osm_tags_rail.yml'
+    raw_osm: osm_rail.xml
+    raw_shp: osm_rail.shp
+    processed: yem_trans_rrd_ln_s1_osm_pp.shp
   roads:
     osm_tags: 'osm_tags_roads.yml'
     raw_osm: osm_roads.xml
     raw_shp: osm_roads.shp
     processed: yem_tran_rds_ln_s1_osm_pp.shp
+  airports:
+    osm_tags: 'osm_tags_airports.yml'
+    raw_osm: osm_airports.xml
+    raw_shp: osm_airports.shp
+    processed: yem_tran_air_pt_s1_osm_pp.shp
+  seaports:
+    osm_tags: 'osm_tags_seaports.yml'
+    raw_osm: osm_seaports.xml
+    raw_shp: osm_seaports.shp
+    processed: yem_tran_por_pt_s1_osm_pp.shp
   admin:
     osm_tags: 'osm_tags_admin.yml'
-    raw: osm_admin.xml
+    raw_osm: osm_admin.xml
+    raw_shp: osm_admin.shp
   coastline:
     osm_tags: 'osm_tags_coast.yml'
     raw: osm_coast.xml

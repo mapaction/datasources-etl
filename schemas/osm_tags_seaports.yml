@@ -1,4 +1,5 @@
-osm_types: 
+osm_types:
+  - nodes
   - relation
   - way
 geom_type:

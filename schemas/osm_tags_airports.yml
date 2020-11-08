@@ -1,8 +1,15 @@
 osm_types: 
-  - relation
+  - node
   - way
+  - relation
 geom_type:
-  multipolygons
+  points
 tags:
-  - boundary:
-    - administrative
+  - amenity:
+    - airport
+  - aeroway:
+    - aerodrome
+    - airfield
+    - helipad
+  - military:
+    - airfield
