@@ -6,6 +6,7 @@ constants:
   ISO3: YEM
   ISO2: YE
   crs: EPSG:2090
+  crs_general: EPSG:4326
 adm0:
   schema: admin0_affected_area_py.yml
   # The GADM urls are all the same. The geopackage includes all available

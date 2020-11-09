@@ -1,6 +1,8 @@
 required:
     - name_en
+    - name_local
     - pcode
+    - par_pcode
 properties:
     geometry_type:
         items:
@@ -11,5 +13,5 @@ properties:
     crs:
         items:
             enum:
-                - EPSG:2090
+                - EPSG:4326
         additionalItems: false

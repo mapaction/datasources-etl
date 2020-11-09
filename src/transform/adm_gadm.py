@@ -30,8 +30,8 @@ def transform_gadm_all(input_filename: str, schema_filename: str,
         output_dir: str):
 
     # Where running as Snakemake ensure it's in from the dir containing file
-    #config = parse_yaml('config.yml')
-    config = parse_yaml('J:\git\datasources-etl\config.yml')
+    config = parse_yaml('config.yml')
+    #config = parse_yaml('J:\git\datasources-etl\config.yml')
     GADM_FILENAME = 'gadm36_{ISO3}.gpkg'
     GADM_LAYER = 'gadm36_{ISO3}_{LVL}'
     iso = config['constants']['ISO3']
@@ -56,18 +56,25 @@ def transform_gadm_all(input_filename: str, schema_filename: str,
                 'NAME_0': 'name_en',
                 'GID_0': 'pcode'
             }
+            # Add columns name_local; par_pcode 
+            # Both will be blank.
+            gdf_lvl['name_local'] = ''
+            gdf_lvl['par_pcode'] = ''
         else:
+            # Add column name_local. Will be blank.
             schema_mapping = {
                 'NAME_{}'.format(lvl): 'name_en',
+                'NL_NAME_{}'.format(lvl): 'name_local',
                 'GID_{}'.format(lvl): 'pcode',
                 'GID_{}'.format(lvl-1): 'par_pcode'
             }
-        # Change CRS
-        gdf_lvl = gdf_lvl.to_crs(config['constants']['crs'])
+        # Define CRS
+        gdf_lvl = gdf_lvl.to_crs(config['constants']['crs_general'])
         # Modify the column names to suit the schema
         gdf_lvl = gdf_lvl.rename(columns=schema_mapping)
-        # Make columns needed for validation
-        gdf_lvl['geometry_type'] = gdf_lvl['geometry'].apply(lambda x: x.geom_type)
+        # Make additional columns needed for validation
+        gdf_lvl['geometry_type'] = gdf_lvl['geometry'].apply(
+                lambda x: x.geom_type)
         gdf_lvl['crs'] = gdf_lvl.crs
         # Validate
         validate(instance=gdf_lvl.to_dict('list'), schema=parse_yaml(schema_filename))
@@ -75,14 +82,14 @@ def transform_gadm_all(input_filename: str, schema_filename: str,
         output_filename = os.path.join(
                 output_dir,
                 '{0}_admn_ad{1}_py_s0_gadm_pp.shp'.format(iso.lower(), lvl)) 
-        gdf_lvl.to_file(output_filename)
+        gdf_lvl.to_file(output_filename, encoding='utf-8')
 
 
 ##
-#
+# 
 if __name__ == '__main__':
-    #source = r'J:/git/datasources-etl/raw_data/MMR_GADM_ADM/gadm36_MMR.gpkg'
-    source = r'J:/git/datasources-etl/raw_data/MMR_GADM_ADM.zip'
+    # Example paths for local, direct testing outside of the snakemake env.
+    source = r'J:/git/datasources-etl/raw_data/YEM_GADM_ADM.zip'
     schema = r'J:\git\datasources-etl\schemas\gadm_admin_py.yml'
     output_dir = r'J:\git\datasources-etl\processed_data'
     transform_gadm_all(source, schema, output_dir)
