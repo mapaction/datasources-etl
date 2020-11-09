@@ -5,5 +5,4 @@ osm_types:
 geom_type:
   points
 tags:
-  - rail:
-    - administrative
+
