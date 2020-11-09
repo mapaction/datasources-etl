@@ -53,6 +53,14 @@ rule  extract_seaports_cod:
     shell:
         "extract_seaports_cod {params} {output}"
 
+rule  extract_global_seaports_cod:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['seaports_global']['cod']['raw'])
+    params:
+        raw_dir=config['dirs']['raw_data']
+    shell:
+        "extract_global_seaports_cod {params} {output}"
+
 # Extract GADM
 rule extract_adm0_gadm:
     output:
@@ -75,6 +83,16 @@ rule extract_adm2_gadm:
         os.path.join(config['dirs']['raw_data'], config['adm2']['gadm']['raw'])
     params:
         url=config['adm2']['gadm']['url']
+    shell:
+        "curl {params} -o {output} -O -J -L"
+
+# Generic rule to extract all GADM admin levels for a particular country.
+rule extract_gadm_adm:
+    output:
+        os.path.join(config['dirs']['raw_data'],
+        "{0}_{1}".format(config['constants']['ISO3'], config['gadm']['raw']))
+    params:
+        url=config["gadm"]["url"].format(ISO3=config["constants"]["ISO3"])
     shell:
         "curl {params} -o {output} -O -J -L"
 
@@ -231,7 +249,7 @@ rule extract_srtm90:
     # not sure how to employ (optional) keyword arguments into snakemake
     params:
         download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir']),
-        config=config['constants']['crs'],
+        config=config['constants']['crs']
     output:
         os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
     shell:
@@ -326,6 +344,16 @@ rule transform_surrounding_gadm:
         os.path.join(config['dirs']['processed_data'], config['surrounding']['gadm']['processed'])
     shell:
         "transform_surrounding_gadm"
+
+# Generic transform all GADM admin levels included within the download.
+rule transform_gadm_adm:
+    input:
+        os.path.join(config['dirs']['raw_data'],
+        "{0}_{1}".format(config['constants']['ISO3'], config['gadm']['raw'])), 
+        os.path.join(config['dirs']['schemas'],config['gadm']['schema']),
+        config['dirs']['processed_data']
+    shell:
+        "transform_gadm_adm {input}"
 
 # Transform Geoboundaries
 rule transform_adm0_geoboundaries:
