@@ -13,9 +13,7 @@ request = session.get(url=next_link)
 json = request.json()
 
 # Loop through flows and append data to dataframe
-# print(json)
 airports = json["features"]
-# print(airports)
 airport_list = []
 for airport in airports:
     airport_list.append(airport["properties"])
