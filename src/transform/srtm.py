@@ -4,11 +4,7 @@ import numpy as np
 import logging
 import scipy.ndimage as ndimage
 import rasterio
-
-
 logger = logging.getLogger(__name__)
-
-
 # Hill shading is determine by a combination of the slope (steepness) and the
 # slope direction -> using http://people.csail.mit.edu/bkph/papers/Hill-Shading.pdf
 
@@ -76,6 +72,25 @@ def calculate_slope_direction_9by9(arr, xy_resolution=1):
 
 
 ###############################################################################
+def calculate_curvature_9by9(arr, xy_resolution=1):
+    """
+    This works as a bilinear interpolation of the second-order terms of
+    a 9x9 surface described by a fourth-order polynomial surface
+    (see http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#//00q90000000t000000)
+    akin to an osculating circle
+    :param arr: 9x9 array of either slope steepness or aspect (in radians)
+    :param xy_resolution: resolution of the raster in metres.
+    :return:
+    """
+    horizontal = ((arr[1,2] + arr[1,0])/2 - arr[1,1]) / (xy_resolution**2)
+    vertical = ((arr[2,1] + arr[0,1])/2 - arr[1,1]) / (xy_resolution**2)
+
+    curvature = -2*(horizontal + vertical) * 100
+
+    return curvature
+
+
+###############################################################################
 def calculate_slope_angle(input_dem_uri):
     """
     Uses scipy's generic image filter to apply slope calculation across an image
@@ -127,6 +142,14 @@ def calculate_slope_aspect(input_dem_uri):
 ###############################################################################
 def calculate_basic_hillshade(aspect_array, slope_array,
                               altitude_deg=45., azimuth_deg=315.):
+    """
+    Calculates a basic hillshade based on
+    :param aspect_array:
+    :param slope_array:
+    :param altitude_deg:
+    :param azimuth_deg:
+    :return:
+    """
 
     # 1) altitude in degrees -> zenith angle in radians
     zenith_rad = (90. - altitude_deg) * np.pi/180.
@@ -141,31 +164,15 @@ def calculate_basic_hillshade(aspect_array, slope_array,
 
 
 ###############################################################################
-def get_basic_hillshade(output_hillshade_uri, input_dem_uri,
-                        altitude_deg=45., azimuth_deg=315.,
-                        save_temp_files=True,
-                        overwrite_temp_files=False):
+def get_slope_angle(input_dem_uri, working_dir, save_temp_files=True,
+                    overwrite_temp_files=False):
 
     # Set up file naming conventions
     input_dem_basename = os.path.basename(input_dem_uri)
-    working_dir = os.path.dirname(output_hillshade_uri) + os.sep \
-                  + 'hillshade_working'
-    if not os.path.exists(working_dir):
-        os.makedirs(working_dir)
-    with rasterio.open(input_dem_uri, 'r') as input_r:
-        inputmeta = input_r.meta
-
-    temp_aspect_uri = working_dir + os.sep + \
-                      '_aspect'.join(os.path.splitext(input_dem_basename))
     temp_slope_uri = working_dir + os.sep + \
                      '_slopeangle'.join(os.path.splitext(input_dem_basename))
 
     # See if the data has already been saved to default temp sub-folder
-    if not os.path.exists(temp_aspect_uri):
-        aspect = calculate_slope_aspect(input_dem_uri)
-    else:
-        with rasterio.open(temp_aspect_uri, 'r') as tempas:
-            aspect = tempas.read(1)
     if not os.path.exists(temp_slope_uri):
         slope_angle = calculate_slope_angle(input_dem_uri)
     else:
@@ -173,25 +180,222 @@ def get_basic_hillshade(output_hillshade_uri, input_dem_uri,
             slope_angle = tempsl.read(1)
 
     # save data if requested
-    if save_temp_files:
-        if overwrite_temp_files or not os.path.exists(temp_aspect_uri):
-            with rasterio.open(temp_aspect_uri, 'w', **inputmeta) as handle:
-                handle.write_band(1, aspect)
+    if overwrite_temp_files or save_temp_files:
+        with rasterio.open(input_dem_uri, 'r') as input_r:
+            inputmeta = input_r.meta
         if overwrite_temp_files or not os.path.exists(temp_slope_uri):
             with rasterio.open(temp_slope_uri, 'w', **inputmeta) as handle:
                 handle.write_band(1, slope_angle)
 
+    return slope_angle
+
+
+###############################################################################
+def get_slope_aspect(input_dem_uri, working_dir, save_temp_files=True,
+                     overwrite_temp_files=False):
+
+    # Set up file naming conventions
+    input_dem_basename = os.path.basename(input_dem_uri)
+    temp_aspect_uri = working_dir + os.sep + \
+                      '_aspect'.join(os.path.splitext(input_dem_basename))
+
+    # See if the data has already been saved to default temp sub-folder
+    if not os.path.exists(temp_aspect_uri):
+        aspect = calculate_slope_aspect(input_dem_uri)
+    else:
+        with rasterio.open(temp_aspect_uri, 'r') as tempas:
+            aspect = tempas.read(1)
+
+    if overwrite_temp_files or save_temp_files:
+        with rasterio.open(input_dem_uri, 'r') as input_r:
+            inputmeta = input_r.meta
+        if overwrite_temp_files or not os.path.exists(temp_aspect_uri):
+            with rasterio.open(temp_aspect_uri, 'w', **inputmeta) as handle:
+                handle.write_band(1, aspect)
+
+    return aspect
+
+
+###############################################################################
+def get_basic_hillshade(output_hillshade_uri, input_dem_uri,
+                        altitude_deg=45., azimuth_deg=315.,
+                        save_temp_files=True,
+                        overwrite_temp_files=False):
+
+    # Set up file naming conventions
+    working_dir = os.path.dirname(output_hillshade_uri) + os.sep \
+                  + 'hillshade_working'
+    if not os.path.exists(working_dir):
+        os.makedirs(working_dir)
+
+    # Get slope angle and aspect
+    aspect = get_slope_aspect(input_dem_uri, working_dir,
+                              save_temp_files=save_temp_files,
+                              overwrite_temp_files=overwrite_temp_files)
+    slope_angle = get_slope_angle(input_dem_uri, working_dir,
+                                  save_temp_files=save_temp_files,
+                                  overwrite_temp_files=overwrite_temp_files)
+
+    # Calculate hillshade
     hillshade = calculate_basic_hillshade(aspect, slope_angle,
                                           altitude_deg=altitude_deg,
                                           azimuth_deg=azimuth_deg)
+
+    with rasterio.open(input_dem_uri, 'r') as input_r:
+        inputmeta = input_r.meta
 
     with rasterio.open(output_hillshade_uri, 'w', **inputmeta) as outraster:
         outraster.write_band(1, hillshade)
 
 
 ###############################################################################
+def calculate_profile_curvature(slope_angle, xy_resolution=1):
+    """
+    Nice explanation of curvature here:
+    https://www.esri.com/arcgis-blog/products/product/imagery/understanding-curvature-rasters/
+    This function calculates the profile curvature of slopes. i.e., the rate
+    of change of slope magnitude.
+    :param slope_angle: the steepness of the slope in radians
+    :param xy_resolution: the length of one dimension of a given raster cell
+    :return:
+    """
+    profile_curvature = slope_angle.copy()
+    profile_curvature[:] = 0.
+    extra_keywords = {"xy_resolution": xy_resolution}
+
+    ndimage.generic_filter(slope_angle, calculate_curvature_9by9, size=(3, 3),
+                           output=profile_curvature, mode='nearest',
+                           extra_keywords=extra_keywords)
+
+    return profile_curvature
 
 
+###############################################################################
+def calculate_planform_curvature(slope_aspect, xy_resolution=1):
+
+    """
+    Nice explanation of curvature here:
+    https://www.esri.com/arcgis-blog/products/product/imagery/understanding-curvature-rasters/
+    This function calculates the planform curvature of slopes. i.e., the rate
+    of change of slope aspect.
+    :param slope_aspect:
+    :param xy_resolution: the length of one dimension of a given raster cell
+    :return:
+    """
+    planform_curvature = slope_aspect.copy()
+    planform_curvature[:] = 0.
+    extra_keywords = {"xy_resolution": xy_resolution}
+
+    ndimage.generic_filter(slope_aspect, calculate_curvature_9by9, size=(3, 3),
+                           output=planform_curvature, mode='nearest',
+                           extra_keywords=extra_keywords)
+
+    return planform_curvature
 
 
+###############################################################################
+def get_profile_curvature(input_dem_uri, working_dir, save_temp_files=True,
+                          overwrite_temp_files=False):
 
+    # Set up file naming conventions
+    input_dem_basename = os.path.basename(input_dem_uri)
+    temp_profcurve_uri = working_dir + os.sep + \
+        '_profilecurvature'.join(os.path.splitext(input_dem_basename))
+
+    with rasterio.open(input_dem_uri, 'r') as input_r:
+        inputmeta = input_r.meta
+    xy_resolution = abs(inputmeta['transform'][0])
+
+    # See if the data has already been saved to default temp sub-folder
+    if not os.path.exists(temp_profcurve_uri):
+        slope_angle = get_slope_angle(input_dem_uri, working_dir,
+                                      save_temp_files=save_temp_files,
+                                      overwrite_temp_files=overwrite_temp_files)
+        profile_curvature = \
+            calculate_profile_curvature(slope_angle, xy_resolution=xy_resolution)
+    else:
+        with rasterio.open(temp_profcurve_uri, 'r') as tempas:
+            profile_curvature = tempas.read(1)
+
+    if overwrite_temp_files or save_temp_files:
+        if overwrite_temp_files or not os.path.exists(temp_profcurve_uri):
+            with rasterio.open(temp_profcurve_uri, 'w', **inputmeta) as handle:
+                handle.write_band(1, profile_curvature)
+
+    return profile_curvature
+
+
+###############################################################################
+def get_planform_curvature(input_dem_uri, working_dir, save_temp_files=True,
+                           overwrite_temp_files=False):
+
+    # Set up file naming conventions
+    input_dem_basename = os.path.basename(input_dem_uri)
+    temp_plancurve_uri = working_dir + os.sep + \
+        '_planformcurvature'.join(os.path.splitext(input_dem_basename))
+
+    with rasterio.open(input_dem_uri, 'r') as input_r:
+        inputmeta = input_r.meta
+    xy_resolution = abs(inputmeta['transform'][0])
+
+    # See if the data has already been saved to default temp sub-folder
+    if not os.path.exists(temp_plancurve_uri):
+        slope_aspect = get_slope_angle(input_dem_uri, working_dir,
+                                       save_temp_files=save_temp_files,
+                                       overwrite_temp_files=overwrite_temp_files)
+        planform_curvature = \
+            calculate_planform_curvature(slope_aspect, xy_resolution=xy_resolution)
+    else:
+        with rasterio.open(temp_plancurve_uri, 'r') as tempas:
+            planform_curvature = tempas.read(1)
+
+    if overwrite_temp_files or save_temp_files:
+        if overwrite_temp_files or not os.path.exists(temp_plancurve_uri):
+            with rasterio.open(temp_plancurve_uri, 'w', **inputmeta) as handle:
+                handle.write_band(1, planform_curvature)
+
+    return planform_curvature
+
+
+###############################################################################
+def get_curvature_hillshade(output_curveshade_uri, input_dem_uri,
+                            altitude_deg=45., azimuth_deg=315.,
+                            save_temp_files=True,
+                            overwrite_temp_files=False):
+
+    # Set up file naming conventions
+    working_dir = os.path.dirname(output_curveshade_uri) + os.sep \
+                  + 'hillshade_working'
+    if not os.path.exists(working_dir):
+        os.makedirs(working_dir)
+
+    # Get slope angle and aspect
+    aspect = get_slope_aspect(input_dem_uri, working_dir,
+                              save_temp_files=save_temp_files,
+                              overwrite_temp_files=overwrite_temp_files)
+    slope_angle = get_slope_angle(input_dem_uri, working_dir,
+                                  save_temp_files=save_temp_files,
+                                  overwrite_temp_files=overwrite_temp_files)
+
+    # Calculate hillshade
+    hillshade = calculate_basic_hillshade(aspect, slope_angle,
+                                          altitude_deg=altitude_deg,
+                                          azimuth_deg=azimuth_deg)
+    # Calculate curvature
+    planform_curv = get_planform_curvature(input_dem_uri, working_dir,
+                                           save_temp_files=True,
+                                           overwrite_temp_files=False)
+    profile_curv = get_planform_curvature(input_dem_uri, working_dir,
+                                          save_temp_files=True,
+                                          overwrite_temp_files=False)
+
+    # rescale curvature to 0 - 255
+    renorm_planform = 255. * abs(planform_curv) / max(abs(planform_curv))
+    renorm_profile = 255. * abs(profile_curv) / max(abs(profile_curv))
+
+    hillshade_curv = 0.2*(renorm_planform + renorm_profile) + 0.6*hillshade
+
+    with rasterio.open(input_dem_uri, 'r') as input_r:
+        inputmeta = input_r.meta
+    with rasterio.open(output_curveshade_uri, 'w', **inputmeta) as outraster:
+        outraster.write_band(1, hillshade_curv)
