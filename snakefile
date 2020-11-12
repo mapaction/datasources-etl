@@ -130,7 +130,9 @@ rule extract_osm_rivers:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['rivers']['raw'])
+            config['dirs']['raw_data'], config['osm']['rivers']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rivers']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -143,9 +145,57 @@ rule extract_osm_lakes:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['lakes']['raw'])
+            config['dirs']['raw_data'], config['osm']['lakes']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['lakes']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_rail:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['rail']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rail']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rail']['raw_shp'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_airports:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['airports']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['airports']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['airports']['raw_shp'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_seaports:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['seaports']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['seaports']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['seaports']['raw_shp'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
 
 rule extract_osm_admin:
     input:
@@ -156,7 +206,9 @@ rule extract_osm_admin:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['admin']['raw'])
+            config['dirs']['raw_data'], config['osm']['admin']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['admin']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -169,7 +221,9 @@ rule extract_osm_roads:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['roads']['raw'])
+            config['dirs']['raw_data'], config['osm']['roads']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['roads']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
