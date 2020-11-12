@@ -137,3 +137,5 @@ internalBnd:
   schema: 'admin_internal_boundaries_ln.yml' 
   adm1: 
     processed: 'yem_admn_ad1_ln_s0_geobnd_pp.shp'
+supplier:
+
