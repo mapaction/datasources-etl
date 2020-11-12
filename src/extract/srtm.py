@@ -275,8 +275,8 @@ def unzip_raster_to_folder(zip_list: list, out_folder: str, ext=".tif"):
         arkiv.extractall(path=out_folder)
 
     unzipped_raster = glob.glob(out_folder + os.sep + '*' + ext)
-    unzipped_raster = [uzt for uzt in unzipped_raster
-                       if uzt not in existing_raster]
+    # unzipped_raster = [uzt for uzt in unzipped_raster
+    #                    if uzt not in existing_raster]
 
     return unzipped_raster
 
@@ -533,5 +533,20 @@ def test_strm30_yemen():
     force_download = False
 
     get_srtm30_for_country(output_geotiff_uri, download_folder,
+                           destination_epsg, country_gpkg=country_gpkg,
+                           nullvalue=nullvalue, force_download=force_download)
+
+
+###############################################################################
+def test_strm90_yemen():
+
+    download_folder = r"/Users/leon/Documents/MapAction/SoftwareDevelopment/Ganymede/data/working/srtm90"
+    destination_epsg = "EPSG:2090"
+    output_geotiff_uri = r"/Users/leon/Documents/MapAction/SoftwareDevelopment/Ganymede/data/YEM_SRTM90.tif"
+    country_gpkg = r"/Users/leon/Documents/MapAction/SoftwareDevelopment/Ganymede/data/gadm36_YEM_gpkg/gadm36_YEM.gpkg"
+    nullvalue = -9999
+    force_download = False
+
+    get_srtm90_for_country(output_geotiff_uri, download_folder,
                            destination_epsg, country_gpkg=country_gpkg,
                            nullvalue=nullvalue, force_download=force_download)

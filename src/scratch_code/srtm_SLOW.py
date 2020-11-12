@@ -7,7 +7,6 @@ import scipy.ndimage as ndimage
 import rasterio
 import numba
 from numba import njit
-from osgeo import gdal
 # from numba import cfunc, carray
 # from numba.core.types import intc, CPointer, float64, intp, voidptr
 # from scipy import LowLevelCallable
@@ -151,7 +150,7 @@ def calculate_slope_aspect_3by3(arr, xy_resolution=1):
             slope += 2*np.pi
     else:
         slope += np.pi
-    return slope
+    return slopesrtm.py
 
 
 ###############################################################################
@@ -241,22 +240,26 @@ def calculate_basic_hillshade(aspect_array, slope_array,
 
 ###############################################################################
 def get_slope_angle(input_dem_uri, working_dir, save_temp_files=True,
-                    overwrite_temp_files=False, extra_suffix=''):
+                    overwrite_temp_files=False):
 
     # Set up file naming conventions
     input_dem_basename = os.path.basename(input_dem_uri)
-    suffix = '_slopeangle_' + extra_suffix
     temp_slope_uri = working_dir + os.sep + \
-                     suffix.join(os.path.splitext(input_dem_basename))
+                     '_slopeangle'.join(os.path.splitext(input_dem_basename))
 
     # See if the data has already been saved to default temp sub-folder
     if not os.path.exists(temp_slope_uri):
         logger.info("Creating slope raster")
-        gdal.DEMProcessing(temp_slope_uri, input_dem_uri, 'slope')
-
-    with rasterio.open(temp_slope_uri, 'r') as tempsl:
-        slope_angle = tempsl.read(1)
-        inputmeta = tempsl.meta
+        with rasterio.open(input_dem_uri, 'r') as raster_in:
+            inputdata = raster_in.read(1)
+            inputmeta = raster_in.meta
+        xy_resolution = abs(inputmeta['transform'][0])
+        slope_angle = \
+            calculate_slope_angle(inputdata, xy_resolution=xy_resolution)
+    else:
+        with rasterio.open(temp_slope_uri, 'r') as tempsl:
+            slope_angle = tempsl.read(1)
+            inputmeta = tempsl.meta
 
     # save data if requested
     if overwrite_temp_files or save_temp_files:
@@ -270,21 +273,26 @@ def get_slope_angle(input_dem_uri, working_dir, save_temp_files=True,
 
 ###############################################################################
 def get_slope_aspect(input_dem_uri, working_dir, save_temp_files=True,
-                     overwrite_temp_files=False, extra_suffix=''):
+                     overwrite_temp_files=False):
 
     # Set up file naming conventions
     input_dem_basename = os.path.basename(input_dem_uri)
-    suffix = '_aspect_' + extra_suffix
     temp_aspect_uri = working_dir + os.sep + \
-                      suffix.join(os.path.splitext(input_dem_basename))
+                      '_aspect'.join(os.path.splitext(input_dem_basename))
 
     # See if the data has already been saved to default temp sub-folder
     if not os.path.exists(temp_aspect_uri):
         logger.info("Creating aspect raster")
-        gdal.DEMProcessing(temp_aspect_uri, input_dem_uri, 'aspect')
-    with rasterio.open(temp_aspect_uri, 'r') as tempas:
-        aspect = tempas.read(1)
-        inputmeta = tempas.meta
+        with rasterio.open(input_dem_uri, 'r') as raster_in:
+            inputdata = raster_in.read(1)
+            inputmeta = raster_in.meta
+        xy_resolution = abs(inputmeta['transform'][0])
+        aspect = \
+            calculate_slope_aspect(inputdata, xy_resolution=xy_resolution)
+    else:
+        with rasterio.open(temp_aspect_uri, 'r') as tempas:
+            aspect = tempas.read(1)
+            inputmeta = tempas.meta
 
     if overwrite_temp_files or save_temp_files:
         if overwrite_temp_files or not os.path.exists(temp_aspect_uri):
@@ -332,7 +340,7 @@ def calculate_profile_curvature(slope_angle, xy_resolution=1):
     Nice explanation of curvature here:
     https://www.esri.com/arcgis-blog/products/product/imagery/understanding-curvature-rasters/
     This function calculates the profile curvature of slopes. i.e., the rate
-    of change of slope magnitude. THIS IS SLOW
+    of change of slope magnitude.
     :param slope_angle: the steepness of the slope in radians
     :param xy_resolution: the length of one dimension of a given raster cell
     :return:
@@ -354,7 +362,7 @@ def calculate_planform_curvature(slope_aspect, xy_resolution=1):
     Nice explanation of curvature here:
     https://www.esri.com/arcgis-blog/products/product/imagery/understanding-curvature-rasters/
     This function calculates the planform curvature of slopes. i.e., the rate
-    of change of slope aspect. THIS IS SLOW
+    of change of slope aspect.
     :param slope_aspect:
     :param xy_resolution: the length of one dimension of a given raster cell
     :return:
@@ -443,7 +451,6 @@ def get_curvature_hillshade(output_curveshade_uri, input_dem_uri,
                             altitude_deg=45., azimuth_deg=315.,
                             save_temp_files=True,
                             overwrite_temp_files=False):
-    """ WOULDN't USE THIS -> scipy.ndimage is slow for large rasters"""
 
     # Set up file naming conventions
     working_dir = set_working_directory(output_curveshade_uri)
@@ -560,11 +567,9 @@ def calculate_multiscale_hillshade(output_mshillshade_uri, input_dem_uri,
 
     xy_size = abs(base_meta['transform'][0])
     logger.info("Calculating aspect")
-    # aspect = calculate_slope_aspect(base_dem[0], xy_resolution=xy_size)
-    aspect = get_slope_aspect(input_dem_uri, working_dir)
+    aspect = calculate_slope_aspect(base_dem[0], xy_resolution=xy_size)
     logger.info("Calculating slope")
-    # slope_angle = calculate_slope_angle(base_dem[0], xy_resolution=xy_size)
-    slope_angle = get_slope_angle(input_dem_uri, working_dir)
+    slope_angle = calculate_slope_angle(base_dem[0], xy_resolution=xy_size)
     slope.append(slope_angle)
     logger.info("Calculating hillshade")
     hillshade.append(calculate_basic_hillshade(aspect, slope_angle,
