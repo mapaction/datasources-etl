@@ -17,6 +17,8 @@ HDX_YEMEN_RIVER_FILENAME = 'wadies.zip'
 HDX_YEMEN_SEAPORT_ADDRESS = 'yemen-ports'
 HDX_YEMEN_SEAPORT_FILENAME = 'ymn-seaport.zip'
 
+HDX_GLOBAL_SEAPORT_ADDRESS = 'world-port-index'
+HDX_GLOBAL_SEAPORT_FILENAME = 'world_port_index.zip'
 
 # HDX COD Admin 0
 def get_adm0_snakemake():
@@ -98,5 +100,16 @@ def get_seaports_snakemake():
 def get_seaports(raw_data_dir: str, output_filename: str):
     filepath_hdx = query_api(HDX_YEMEN_SEAPORT_ADDRESS, raw_data_dir,
                              [HDX_YEMEN_SEAPORT_FILENAME])[HDX_YEMEN_SEAPORT_FILENAME]
+    shutil.move(os.path.join(raw_data_dir, filepath_hdx),
+                output_filename)
+
+# HDX COD Global Seaports
+def get_global_seaports_snakemake():
+    get_global_seaports(sys.argv[1], sys.argv[2])
+
+
+def get_global_seaports(raw_data_dir: str, output_filename: str):
+    filepath_hdx = query_api(HDX_GLOBAL_SEAPORT_ADDRESS, raw_data_dir,
+                             [HDX_GLOBAL_SEAPORT_FILENAME])[HDX_GLOBAL_SEAPORT_FILENAME]
     shutil.move(os.path.join(raw_data_dir, filepath_hdx),
                 output_filename)

@@ -52,7 +52,9 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
         df_adm1 = gpd.read_file(f'zip://{input_filename}!{GADM_FILENAME.format(ISO3=config["constants"]["ISO3"])}',
                                 layer=GADM_LAYER.format(ISO3=config['constants']['ISO3']))
         schema_mapping = {
-            'NAME_1': 'name_en'
+            'NAME_1': 'name_en',
+            'GID_1': 'pcode',
+            'GID_0': 'par_pcode'
         }
     elif source == "geoboundaries":
         rawdir = config['dirs']['raw_data']

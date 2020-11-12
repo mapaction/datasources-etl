@@ -1,6 +1,8 @@
 osm_types:
   - relation
-  - way 
+  - way
+geom_type:
+  lines
 tags:
   - waterway: 
     - river
