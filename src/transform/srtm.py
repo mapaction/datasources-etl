@@ -250,7 +250,7 @@ def get_slope_angle(input_dem_uri, working_dir, save_temp_files=True,
                      suffix.join(os.path.splitext(input_dem_basename))
 
     # See if the data has already been saved to default temp sub-folder
-    if not os.path.exists(temp_slope_uri):
+    if not os.path.exists(temp_slope_uri) or overwrite_temp_files:
         logger.info("Creating slope raster")
         gdal.DEMProcessing(temp_slope_uri, input_dem_uri, 'slope')
 
@@ -279,7 +279,7 @@ def get_slope_aspect(input_dem_uri, working_dir, save_temp_files=True,
                       suffix.join(os.path.splitext(input_dem_basename))
 
     # See if the data has already been saved to default temp sub-folder
-    if not os.path.exists(temp_aspect_uri):
+    if not os.path.exists(temp_aspect_uri) or overwrite_temp_files:
         logger.info("Creating aspect raster")
         gdal.DEMProcessing(temp_aspect_uri, input_dem_uri, 'aspect')
     with rasterio.open(temp_aspect_uri, 'r') as tempas:
@@ -553,7 +553,7 @@ def calculate_multiscale_hillshade(output_mshillshade_uri, input_dem_uri,
         base_dem.append(indem.read(1))
         base_meta = indem.meta
 
-    #test
+                    #test
     # out_test = orig_dem.copy()
     # out_test[:] = 0
     # ndimage.generic_filter(orig_dem, np.mean, size=(3, 3), output=out_test, mode='nearest')
