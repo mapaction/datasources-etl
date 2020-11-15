@@ -25,6 +25,13 @@ def get_ourairport_link(iso3):
 
 ###############################################################################
 def get_our_airports(output_airport_uri, iso3, raw_data_uri):
+    """
+    fetched our airports data from standard url
+    :param output_airport_uri:
+    :param iso3:
+    :param raw_data_uri:
+    :return:
+    """
 
     next_link = get_ourairport_link(iso3)
 

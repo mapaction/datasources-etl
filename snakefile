@@ -257,8 +257,8 @@ rule extract_srtm90:
 
 rule extract_ourairports:
     params:
-        config['constants']['ISO3'],
-        os.path.join(
+        iso3=config['constants']['ISO3'],
+        raw_data_uri=os.path.join(
             config['dirs']['raw_data'], config['ourairports']['raw'])
     output:
         os.path.join(
