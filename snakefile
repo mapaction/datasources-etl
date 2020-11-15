@@ -53,6 +53,14 @@ rule  extract_seaports_cod:
     shell:
         "extract_seaports_cod {params} {output}"
 
+rule  extract_global_seaports_cod:
+    output:
+        os.path.join(config['dirs']['raw_data'], config['seaports_global']['cod']['raw'])
+    params:
+        raw_dir=config['dirs']['raw_data']
+    shell:
+        "extract_global_seaports_cod {params} {output}"
+
 # Extract GADM
 rule extract_adm0_gadm:
     output:
@@ -78,6 +86,18 @@ rule extract_adm2_gadm:
     shell:
         "curl {params} -o {output} -O -J -L"
 
+# Generic rule to extract all GADM admin levels for a particular country.
+rule extract_gadm_adm:
+    output:
+        os.path.join(config['dirs']['raw_data'],
+        "{0}_{1}".format(config['constants']['ISO3'], config['gadm']['raw']))
+    params:
+        url=config["gadm"]["url"].format(ISO3=config["constants"]["ISO3"])
+    shell:
+        "curl {params} -o {output} -O -J -L"
+
+# Following should negate the need for the above GADM rules since the world 
+# file is processed.
 rule extract_world_gadm:
     # Note. By removing the output Snakemake will always re-run the process
     # this means we could program a test into the extract process if
@@ -110,7 +130,9 @@ rule extract_osm_rivers:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['rivers']['raw'])
+            config['dirs']['raw_data'], config['osm']['rivers']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rivers']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -123,9 +145,57 @@ rule extract_osm_lakes:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['lakes']['raw'])
+            config['dirs']['raw_data'], config['osm']['lakes']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['lakes']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_rail:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['rail']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rail']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['rail']['raw_shp'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_airports:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['airports']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['airports']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['airports']['raw_shp'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
+rule extract_osm_seaports:
+    input:
+        os.path.join(
+            config['dirs']['schemas'], config['osm']['seaports']['osm_tags'])
+    params:
+        url=config['osm']['url'],
+        country=config['constants']['ISO2']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['seaports']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['seaports']['raw_shp'])
+    shell:
+        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
+
 
 rule extract_osm_admin:
     input:
@@ -136,7 +206,9 @@ rule extract_osm_admin:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['admin']['raw'])
+            config['dirs']['raw_data'], config['osm']['admin']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['admin']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -149,7 +221,9 @@ rule extract_osm_roads:
         country=config['constants']['ISO2']
     output:
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['roads']['raw'])
+            config['dirs']['raw_data'], config['osm']['roads']['raw_osm']),
+        os.path.join(
+            config['dirs']['raw_data'], config['osm']['roads']['raw_shp'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -158,6 +232,28 @@ rule extract_osm_roads:
 rule extract_geoboundaries_adm0_all:
     shell:
         "extract_geoboundaries_adm0_all"
+
+# Extract SRTM
+# TODO Note: SRTM Snakemake rule does not currently work - functionality has been parked for SDS PoC
+rule extract_srtm30:
+    # not sure how to employ (optional) keyword arguments into snakemake
+    params:
+        download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir']),
+        config=config['constants']['crs']
+    output:
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed'])
+    shell:
+        "extract_srtm30 {output} {params}"
+
+rule extract_srtm90:
+    # not sure how to employ (optional) keyword arguments into snakemake
+    params:
+        download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir']),
+        config=config['constants']['crs']
+    output:
+        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
+    shell:
+        "extract_srtm90 {output} {params}"
 
 ##TRANSFORM
 ##Transform HDX COD
@@ -249,6 +345,16 @@ rule transform_surrounding_gadm:
     shell:
         "transform_surrounding_gadm"
 
+# Generic transform all GADM admin levels included within the download.
+rule transform_gadm_adm:
+    input:
+        os.path.join(config['dirs']['raw_data'],
+        "{0}_{1}".format(config['constants']['ISO3'], config['gadm']['raw'])), 
+        os.path.join(config['dirs']['schemas'],config['gadm']['schema']),
+        config['dirs']['processed_data']
+    shell:
+        "transform_gadm_adm {input}"
+
 # Transform Geoboundaries
 rule transform_adm0_geoboundaries:
     input:
@@ -316,3 +422,15 @@ rule transform_roads_osm:
         os.path.join(config['dirs']['processed_data'], config['roads']['osm']['processed'])
     shell:
         "transform_roads_osm {input} {output}"
+
+
+# Obtain internal boundary lines from Admin polygons (Transform)
+# Adm1
+rule transform_internal_boundaries:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm1']['processed']),
+        os.path.join(config['dirs']['schemas'], config['internalBnd']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['internalBnd']['adm1']['processed'])
+    shell:
+        "transform_internal_boundaries {input} {output}"
