@@ -3,13 +3,18 @@ import requests
 import json
 
 from utils.yaml_api import parse_yaml
+from utils.osm import convert_osm2shape
+from utils.requests_api import download_url
 
 def extract_osm_query():
     osm_url = sys.argv[1] #"http://overpass-api.de/api/interpreter?"
     country = sys.argv[2] #'YE'
     osm_schema = parse_yaml(sys.argv[3]) #parse_yaml('schemas/osm_tags_lakes.yml')
-    output_file = sys.argv[4] #'raw_data/osm_rivers_pol.xml'
-    get_osm_xml(osm_url, osm_query(osm_schema, country), output_file)
+    geom_type = parse_yaml(sys.argv[3])['geom_type']
+    osm_output_file = sys.argv[4] #'raw_data/osm_rivers_pol.xml'
+    shp_output_file = sys.argv[5] #'raw_data/osm_rivers_pol.xml'
+    get_osm_xml(osm_url, osm_query(osm_schema, country), osm_output_file)
+    convert_osm2shape(osm_output_file,shp_output_file,geom_type)
 
 def osm_query(osm_yml: dict, iso2_country: str):
     """ Country based query using Overpass Query Language.  Using key value pairs,
@@ -56,17 +61,31 @@ def osm_query(osm_yml: dict, iso2_country: str):
                 elif value == None:
                     main_query += f'{osm_type}[{tag}](area.a); \n'
     main_query += '); \n'
-    # recurse through previous set to bring back all nodes, then return final set
-    recurse_out = (
-        '(._;>;); \n'
-        'out body qt;')
+    # Check geom_type output in osm_yml (will be used to create temp shapefile)
+    # catch errors in case geom_type missing from osm_yml
+    try:
+        geom_type = osm_yml['geom_type']
+    except Exception as e:
+        print(e)
+        geom_type = None
+    if geom_type == 'points':
+        # don't recurse nodes, instead return centroid of feature, not line/poly, return final set.
+        recurse_out = (
+            'out center qt;')
+    else:
+        # recurse through previous set to return all nodes & full geometry, then return final set
+        recurse_out = (
+            '(._;>;); \n'
+            'out body qt;')
     # Combine all parts of query into full query to send to Overpass
     final_query = (area_filter
                    + main_query + recurse_out)
     return final_query
 
-
 def get_osm_xml(api_url, osm_query, output_file):
+    download_url(api_url, output_file, parameters={'data': osm_query})
+    """
+    # Commented out as using requests wrapped in method in utils/requests_api.py
     response  = requests.get(api_url,
                                 params={'data': osm_query})
     data = response.text
@@ -75,3 +94,4 @@ def get_osm_xml(api_url, osm_query, output_file):
             file.write(response.text)
     else:
         pass
+    """
