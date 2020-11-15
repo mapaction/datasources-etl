@@ -5,8 +5,8 @@ import json
 logger = logging.getLogger()
 
 
-def download_url(url, save_path, chunk_size=128):
-    r = requests.get(url, stream=True)
+def download_url(url, save_path, chunk_size=1024, parameters=None):
+    r = requests.get(url, stream=True, params=parameters)
     with open(save_path, 'wb') as fd:
         for chunk in r.iter_content(chunk_size=chunk_size):
             fd.write(chunk)

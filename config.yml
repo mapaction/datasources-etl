@@ -6,9 +6,12 @@ constants:
   ISO3: YEM
   ISO2: YE
   crs: EPSG:2090
+  crs_general: EPSG:4326
 adm0:
   schema: admin0_affected_area_py.yml
-  gadm:
+  # The GADM urls are all the same. The geopackage includes all available
+  # levels. 
+  gadm: 
     raw: gadm_adm0.zip
     processed: yem_admn_ad0_py_s0_gadm_pp.shp
     url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_YEM_gpkg.zip'
@@ -46,19 +49,38 @@ osm:
   url: 'http://overpass-api.de/api/interpreter?'
   lakes:
     osm_tags: 'osm_tags_lakes.yml'
-    raw: osm_lakes.xml
+    raw_osm: osm_lakes.xml
+    raw_shp: osm_lakes.shp
     processed: yem_phys_lak_py_s1_osm_pp.shp
   rivers:
     osm_tags: 'osm_tags_rivers.yml'
-    raw: osm_rivers.xml
+    raw_osm: osm_rivers.xml
+    raw_shp: osm_rivers.shp
     processed: yem_phys_riv_ln_s1_osm_pp.shp
+  rail:
+    osm_tags: 'osm_tags_rail.yml'
+    raw_osm: osm_rail.xml
+    raw_shp: osm_rail.shp
+    processed: yem_trans_rrd_ln_s1_osm_pp.shp
   roads:
     osm_tags: 'osm_tags_roads.yml'
-    raw: osm_roads.xml
+    raw_osm: osm_roads.xml
+    raw_shp: osm_roads.shp
     processed: yem_tran_rds_ln_s1_osm_pp.shp
+  airports:
+    osm_tags: 'osm_tags_airports.yml'
+    raw_osm: osm_airports.xml
+    raw_shp: osm_airports.shp
+    processed: yem_tran_air_pt_s1_osm_pp.shp
+  seaports:
+    osm_tags: 'osm_tags_seaports.yml'
+    raw_osm: osm_seaports.xml
+    raw_shp: osm_seaports.shp
+    processed: yem_tran_por_pt_s1_osm_pp.shp
   admin:
     osm_tags: 'osm_tags_admin.yml'
-    raw: osm_admin.xml
+    raw_osm: osm_admin.xml
+    raw_shp: osm_admin.shp
   coastline:
     osm_tags: 'osm_tags_coast.yml'
     raw: osm_coast.xml
@@ -73,6 +95,17 @@ seaports:
   cod:
     raw: cod_seaports.zip
     processed: yem_tran_por_pt_s1_unocha_pp.shp
+seaports_global:
+  schema: seaports_affected_area_py.yml
+  cod:
+    raw: cod_global_seaports.zip
+    processed: yem_tran_por_pt_s1_worldportindex_pp.shp
+gadm:
+  schema: gadm_admin_py.yml
+  raw: GADM_ADM.zip
+  # Use variable substitution so no need to change the ISO3 code
+  # See Snakemake extract_gadm_adm
+  url: 'https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_{ISO3}_gpkg.zip'
 surrounding:
   schema: admin0_surrounding_countries_py.yml
   gadm:
@@ -120,3 +153,7 @@ srtm:
     processed: yem_elev_dem_ras_s1_srtm_pp_90m.tif
 wfp:
   url: 'https://geonode.wfp.org/geoserver/wfs?srsName=EPSG%3A4326&typename=geonode%3Awld_trs_airports_wfp&outputFormat=json&service=WFS&request=GetFeature'
+internalBnd:
+  schema: 'admin1_internal_boundaries_ln.yml' 
+  adm1: 
+    processed: 'yem_admn_ad1_ln_s0_geobnd_pp.shp'

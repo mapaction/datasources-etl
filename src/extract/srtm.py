@@ -431,8 +431,8 @@ def transform_raster_to_metre_projection(country_geotiff_uri: str,
 
 
 ###############################################################################
-def get_srtm30_for_country(output_geotiff_uri: str, download_folder: str,
-                           destination_epsg: str,
+def get_srtm30_for_country(output_geotiff_uri: str,
+                           download_folder: str, destination_epsg: str,
                            country_gpkg=None, nullvalue=-9999,
                            force_download=False):
     """
@@ -462,8 +462,8 @@ def get_srtm30_for_country(output_geotiff_uri: str, download_folder: str,
 
 
 ###############################################################################
-def get_srtm90_for_country(output_geotiff_uri: str, download_folder: str,
-                           destination_epsg: str,
+def get_srtm90_for_country(output_geotiff_uri: str,
+                           download_folder: str, destination_epsg: str,
                            country_gpkg=None, nullvalue=-9999,
                            force_download=False):
     """
