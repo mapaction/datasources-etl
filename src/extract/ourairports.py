@@ -1,4 +1,5 @@
 import logging
+import sys
 import requests
 import geopandas as gpd
 import pandas as pd
@@ -24,7 +25,7 @@ def get_ourairport_link(iso3):
 
 
 ###############################################################################
-def get_our_airports(output_airport_uri, iso3, raw_data_uri):
+def get_our_airports(output_airport_uri, iso3):
     """
     fetched our airports data from standard url
     :param output_airport_uri:
@@ -70,5 +71,9 @@ def get_our_airports(output_airport_uri, iso3, raw_data_uri):
     # airport_pt.to_file("../../raw_data/ourairports_airports.shp")
     # airport_pt.to_file("../../processed_data/yem_tran_air_pt_s1_ourairports_pp.shp")
     airport_pt.to_file(output_airport_uri)
-    airport_pt.to_file(raw_data_uri)
 
+
+###############################################################################
+def get_ourairports_snakemake():
+    """snakemake rule"""
+    get_our_airports(sys.argv[1], sys.argv[2])

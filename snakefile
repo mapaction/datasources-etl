@@ -257,14 +257,12 @@ rule extract_srtm90:
 
 rule extract_ourairports:
     params:
-        iso3=config['constants']['ISO3'],
-        raw_data_uri=os.path.join(
-            config['dirs']['raw_data'], config['ourairports']['raw'])
+        config['constants']['ISO3']
     output:
         os.path.join(
-            config['dirs']['processed_data'], config['ourairports']['processed'])
+            config['dirs']['raw_data'], config['ourairports']['raw'])
     shell:
-        "extract_ourairports {output} \"{params.iso3}\" \"{params.raw_data_uri}\" "
+        "extract_ourairports {output} {params}"
 
 ##TRANSFORM
 ##Transform HDX COD
