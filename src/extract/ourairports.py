@@ -8,14 +8,16 @@ logger = logging.getLogger(__name__)
 
 
 ###############################################################################
-def get_ourairport_link(iso3):
+def get_ourairport_link(iso3, base_uri=None):
     """
     Fake look up function to convert a ISO3 code to a ourairportapi.com
     link (in full pipeline, this would rely on some ISO3 based lookup)
     :param iso3: ISO 3 code for country
     :return: url for country airport data from ourairports
     """
-    base_uri = "https://ourairportapi.com/airports-in/"
+    if base_uri is None:
+        base_uri = "https://ourairportapi.com/airports-in/"
+
     if iso3 == 'YEM':
         link_uri = base_uri + "Yemen"
     else:
@@ -25,7 +27,7 @@ def get_ourairport_link(iso3):
 
 
 ###############################################################################
-def get_our_airports(output_airport_uri, iso3):
+def get_our_airports(output_airport_uri, iso3, ourairports_url):
     """
     fetched our airports data from standard url
     :param output_airport_uri:
@@ -34,7 +36,7 @@ def get_our_airports(output_airport_uri, iso3):
     :return:
     """
 
-    next_link = get_ourairport_link(iso3)
+    next_link = get_ourairport_link(iso3, base_uri=ourairports_url)
 
     # Loop through pages and pull data from the API
     session = requests.Session()
@@ -76,4 +78,4 @@ def get_our_airports(output_airport_uri, iso3):
 ###############################################################################
 def get_ourairports_snakemake():
     """snakemake rule"""
-    get_our_airports(sys.argv[1], sys.argv[2])
+    get_our_airports(sys.argv[1], sys.argv[2], sys.argv[3])
