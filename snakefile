@@ -264,7 +264,7 @@ rule extract_ourairports:
         os.path.join(
             config['dirs']['processed_data'], config['ourairports']['processed'])
     shell:
-        "extract_ourairports {output} \"{params.iso3}}\" \"{params.raw_data}}\" "
+        "extract_ourairports {output} \"{params.iso3}\" \"{params.raw_data}\" "
 
 ##TRANSFORM
 ##Transform HDX COD
