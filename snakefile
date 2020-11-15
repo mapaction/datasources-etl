@@ -255,6 +255,17 @@ rule extract_srtm90:
     shell:
         "extract_srtm90 {output} {params}"
 
+rule extract_ourairports:
+    params:
+        config['constants']['ISO3'],
+        os.path.join(
+            config['dirs']['raw_data'], config['ourairports']['raw'])
+    output:
+        os.path.join(
+            config['dirs']['processed_data'], config['ourairports']['processed'])
+    shell:
+        "extract_ourairports {output} {params}"
+
 ##TRANSFORM
 ##Transform HDX COD
 

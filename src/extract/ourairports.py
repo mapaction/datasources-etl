@@ -63,3 +63,5 @@ def get_our_airports(output_airport_uri, iso3, raw_data_uri):
     # airport_pt.to_file("../../raw_data/ourairports_airports.shp")
     # airport_pt.to_file("../../processed_data/yem_tran_air_pt_s1_ourairports_pp.shp")
     airport_pt.to_file(output_airport_uri)
+    airport_pt.to_file(raw_data_uri)
+
