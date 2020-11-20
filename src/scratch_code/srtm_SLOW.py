@@ -150,7 +150,7 @@ def calculate_slope_aspect_3by3(arr, xy_resolution=1):
             slope += 2*np.pi
     else:
         slope += np.pi
-    return slopesrtm.py
+    return slope
 
 
 ###############################################################################
@@ -176,6 +176,7 @@ def calculate_curvature_3by3(arr, xy_resolution=1):
 ###############################################################################
 def calculate_slope_angle(dem_raster, xy_resolution=1):
     """
+    SLOW: OPTING TO USE GDAL LIBRARY INSTEAD
     Uses scipy's generic image filter to apply slope calculation across an image
     efficiently, then calculate slope angle. See
     docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.generic_filter.html
@@ -198,6 +199,7 @@ def calculate_slope_angle(dem_raster, xy_resolution=1):
 ###############################################################################
 def calculate_slope_aspect(dem_raster, xy_resolution=1):
     """
+    SLOW: OPTING TO USE GDAL LIBRARY INSTEAD
     Uses scipy's generic image filter to apply slope direction across an image
     efficiently, then calculae the aspect See
     :param dem_raster:
@@ -337,6 +339,7 @@ def get_basic_hillshade(output_hillshade_uri, input_dem_uri,
 ###############################################################################
 def calculate_profile_curvature(slope_angle, xy_resolution=1):
     """
+        SLOW: OPTING TO USE GDAL LIBRARY INSTEAD
     Nice explanation of curvature here:
     https://www.esri.com/arcgis-blog/products/product/imagery/understanding-curvature-rasters/
     This function calculates the profile curvature of slopes. i.e., the rate
@@ -359,6 +362,7 @@ def calculate_profile_curvature(slope_angle, xy_resolution=1):
 ###############################################################################
 def calculate_planform_curvature(slope_aspect, xy_resolution=1):
     """
+        SLOW: OPTING TO USE GDAL LIBRARY INSTEAD
     Nice explanation of curvature here:
     https://www.esri.com/arcgis-blog/products/product/imagery/understanding-curvature-rasters/
     This function calculates the planform curvature of slopes. i.e., the rate

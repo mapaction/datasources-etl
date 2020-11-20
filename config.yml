@@ -7,6 +7,8 @@ constants:
   ISO2: YE
   crs: EPSG:2090
   crs_general: EPSG:4326
+  altitude_light_deg: 315.0
+  azimuth_light_deg: 45.0
 adm0:
   schema: admin0_affected_area_py.yml
   # The GADM urls are all the same. The geopackage includes all available
@@ -148,9 +150,13 @@ srtm:
   srtm30:
     dl_subdir: SRTM30tiles
     processed: yem_elev_dem_ras_s1_srtm_pp_30m.tif
+    basichillshade: yem_elev_hsh_ras_s1_srtm_pp_basic30m.tif
+    prettyhillshade: yem_elev_hsh_ras_s1_srtm_pp_pretty30m.tif
   srtm90:
     dl_subdir: SRTM90tiles
     processed: yem_elev_dem_ras_s1_srtm_pp_90m.tif
+    basichillshade: yem_elev_hsh_ras_s1_srtm_pp_basic90m.tif
+    prettyhillshade: yem_elev_hsh_ras_s1_srtm_pp_pretty90m.tif
 wfp:
   url: 'https://geonode.wfp.org/geoserver/wfs?srsName=EPSG%3A4326&typename=geonode%3Awld_trs_airports_wfp&outputFormat=json&service=WFS&request=GetFeature'
 internalBnd:

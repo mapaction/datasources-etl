@@ -42,6 +42,11 @@ setuptools.setup(
             # Roads
             'extract_roads_cod=extract.cod:get_roads_snakemake',
             'transform_roads_cod=transform.roads:transform_cod',
+            # SRTM
+            'transform_srtm30_hsh_basic=transform.srtm:basic_hillshade_snakemake'
+            'transform_srtm90_hsh_basic=transform.srtm:basic_hillshade_snakemake'
+            'transform_srtm30_hsh_pretty=transform.srtm:pretty_hillshade_snakemake'
+            'transform_srtm90_hsh_pretty=transform.srtm:pretty_hillshade_snakemake'
         ]
     }
 )
