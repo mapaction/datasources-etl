@@ -753,7 +753,7 @@ def calculate_multiscale_hillshade(output_mshillshade_uri, downloaded_dem_uri,
     out_meta = working_meta.copy()
     out_meta.update(dtype='int16')
     out_meta.update(compress='lzw')
-    multiscale_hillshade[np.where(sea_mask==1)] = out_meta['nodata']
+    multiscale_hillshade[np.where(sea_mask == 1)] = out_meta['nodata']
 
     with rasterio.open(output_mshillshade_uri, 'w', **out_meta) as outmshade:
         outmshade.write_band(1, multiscale_hillshade.astype(out_meta['dtype']))
