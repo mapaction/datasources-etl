@@ -6,7 +6,6 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 
-
 ###############################################################################
 def get_ourairport_link(iso3, base_uri=None):
     """
