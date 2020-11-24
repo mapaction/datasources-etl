@@ -151,7 +151,7 @@ ourairports:
   processed: yem_tran_air_pt_s1_ourairports_pp.shp
 wfp_airports:
   schema: wfp_airports_affected_area.yml
-  url: 'https://geonode.wfp.org/geoserver/wfs?srsName=EPSG%3A4326&typename=geonode%3Awld_trs_airports_wfp&outputFormat=json&service=WFS&request=GetFeature/'
+  url: 'https://geonode.wfp.org/geoserver/wfs?srsName=EPSG%3A4326&typename=geonode%3Awld_trs_airports_wfp&outputFormat=json&service=WFS&request=GetFeature'
   raw: yem_tran_air_pt_s1_wfp_pp_RAW.shp
   processed: yem_tran_air_pt_s1_wfp_pp.shp
 srtm:

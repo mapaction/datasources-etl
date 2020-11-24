@@ -23,7 +23,7 @@ setuptools.setup(
             'extract_geoboundaries=extract.geoboundaries:get_geoboundaries_adm',
             'extract_geoboundaries_adm0_all=extract.geoboundaries:get_all_adm0',
             'extract_ourairports=extract.ourairports:get_ourairports_snakemake',
-            'extract_wfp_airports=extract.wfp_airports:get_wfp_airports_snakemake',
+            'extract_wfp_airports=extract.wfp:get_wfp_airports_snakemake',
             'transform_adm0_cod=transform.adm0:transform_cod',
             'transform_adm1_cod=transform.adm1:transform_cod',
             'transform_adm2_cod=transform.adm2:transform_cod',
