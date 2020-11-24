@@ -489,7 +489,7 @@ def get_srtm90_for_country(output_geotiff_uri: str,
     mosaic_rasters(srtm90_tif_list, temp_mosaic_uri, nullvalue=nullvalue)
     transform_raster_to_metre_projection(temp_mosaic_uri, destination_epsg,
                                          output_geotiff_uri)
-    # os.remove(temp_mosaic_uri)
+    os.remove(temp_mosaic_uri)
 
 
 ###############################################################################

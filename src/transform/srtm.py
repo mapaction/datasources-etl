@@ -166,7 +166,7 @@ def patch_raster_nodata_within_boundary(input_raster_uri,
 def calculate_curvature_3by3(arr, xy_resolution=1):
     """
     This works as a bilinear interpolation of the second-order terms of
-    a 9x9 surface described by a fourth-order polynomial surface
+    a 3x3 surface described by a fourth-order polynomial surface
     (see http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#//00q90000000t000000)
     akin to an osculating circle
     :param arr: 3x3 array of either slope steepness or aspect (in radians)
@@ -293,49 +293,26 @@ def get_basic_hillshade(output_hillshade_uri, input_dem_uri,
 
 
 ###############################################################################
-def calculate_profile_curvature(slope_angle, xy_resolution=1):
+def calculate_slope_curvature(slope_angle, xy_resolution=1):
     """
     SLOW: ABANDONED
     Nice explanation of curvature here:
     https://www.esri.com/arcgis-blog/products/product/imagery/understanding-curvature-rasters/
     This function calculates the profile curvature of slopes. i.e., the rate
     of change of slope magnitude. THIS IS SLOW
-    :param slope_angle: the steepness of the slope in radians
+    :param slope_angle: the steepness/aspect of the slope
     :param xy_resolution: the length of one dimension of a given raster cell
     :return:
     """
-    profile_curvature = slope_angle.copy()
-    profile_curvature[:] = 0.
+    slope_curvature = slope_angle.copy()
+    slope_curvature[:] = 0.
     extra_keywords = {"xy_resolution": xy_resolution}
 
     ndimage.generic_filter(slope_angle, calculate_curvature_3by3, size=(3, 3),
-                           output=profile_curvature, mode='nearest',
+                           output=slope_curvature, mode='nearest',
                            extra_keywords=extra_keywords)
 
-    return profile_curvature
-
-
-###############################################################################
-def calculate_planform_curvature(slope_aspect, xy_resolution=1):
-    """
-    SLOW: ABANDONED
-    Nice explanation of curvature here:
-    https://www.esri.com/arcgis-blog/products/product/imagery/understanding-curvature-rasters/
-    This function calculates the planform curvature of slopes. i.e., the rate
-    of change of slope aspect. THIS IS SLOW
-    :param slope_aspect:
-    :param xy_resolution: the length of one dimension of a given raster cell
-    :return:
-    """
-    planform_curvature = slope_aspect.copy()
-    planform_curvature[:] = 0.
-    extra_keywords = {"xy_resolution": xy_resolution}
-
-    ndimage.generic_filter(slope_aspect, calculate_curvature_3by3, size=(3, 3),
-                           output=planform_curvature, mode='nearest',
-                           extra_keywords=extra_keywords)
-
-    return planform_curvature
+    return slope_curvature
 
 
 ###############################################################################
@@ -359,7 +336,7 @@ def get_profile_curvature(input_dem_uri, working_dir,
         slope_angle = get_slope_steepness_deg(input_dem_uri, working_dir,
                                               overwrite_temp_files=overwrite_temp_files)
         profile_curvature = \
-            calculate_profile_curvature(slope_angle, xy_resolution=xy_resolution)
+            calculate_slope_curvature(slope_angle, xy_resolution=xy_resolution)
     else:
         with rasterio.open(temp_profcurve_uri, 'r') as tempas:
             profile_curvature = tempas.read(1)
@@ -390,10 +367,10 @@ def get_planform_curvature(input_dem_uri, working_dir,
     # See if the data has already been saved to default temp sub-folder
     if not os.path.exists(temp_plancurve_uri):
         logger.info("Creating planform curvature raster")
-        slope_aspect = get_slope_steepness_deg(input_dem_uri, working_dir,
-                                               overwrite_temp_files=overwrite_temp_files)
+        slope_aspect = get_slope_aspect_deg(input_dem_uri, working_dir,
+                                            overwrite_temp_files=overwrite_temp_files)
         planform_curvature = \
-            calculate_planform_curvature(slope_aspect, xy_resolution=xy_resolution)
+            calculate_slope_curvature(slope_aspect, xy_resolution=xy_resolution)
     else:
         with rasterio.open(temp_plancurve_uri, 'r') as tempas:
             planform_curvature = tempas.read(1)
@@ -432,7 +409,7 @@ def get_curvature_hillshade(output_curveshade_uri, input_dem_uri,
     # Calculate curvature
     planform_curv = get_planform_curvature(input_dem_uri, working_dir,
                                            overwrite_temp_files=overwrite_temp_files)
-    profile_curv = get_planform_curvature(input_dem_uri, working_dir,
+    profile_curv = get_profile_curvature(input_dem_uri, working_dir,
                                           overwrite_temp_files=overwrite_temp_files)
 
     # rescale curvature to 0 - 255
