@@ -31,7 +31,7 @@ def get_our_airports(output_airport_uri, iso3, ourairports_url):
     fetched our airports data from standard url
     :param output_airport_uri:
     :param iso3:
-    :param raw_data_uri:
+    :param ourairports_url:
     :return:
     """
 

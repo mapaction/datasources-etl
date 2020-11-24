@@ -14,10 +14,9 @@ def get_wfp_airport_link():
     :param iso3: ISO 3 code for country
     :return: url for country airport data from wfp_airports
     """
-    base_uri = "https://geonode.wfp.org/geoserver/wfs" \
-               + "srsName=EPSG%3A4326&" \
-               + "typename=geonode%3Awld_trs_airports_wfp&" \
-               + "outputFormat=json&service=WFS&request=GetFeature"
+    base_uri = "https://geonode.wfp.org/geoserver/wfs?srsName=EPSG%3A4326&" \
+               + "typename=geonode%3Awld_trs_airports_wfp&outputFormat=json&" \
+               + "service=WFS&request=GetFeature"
 
     return base_uri
 
@@ -35,11 +34,8 @@ def get_wfp_airports(output_airport_uri, iso3, wfp_airports_url):
     if wfp_airports_url is None:
         wfp_airports_url = get_wfp_airport_link()
 
-    # Loop through pages and pull data from the API
-    session = requests.Session()
-
-    # print(next_link)
-    request = session.get(url=wfp_airports_url)
+    # Pull data from the API as a json lump
+    request = requests.get(wfp_airports_url)
     json = request.json()
 
     # Loop through flows and append data to dataframe
