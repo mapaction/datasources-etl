@@ -14,32 +14,19 @@ def transform_gadm():
     transform_gadm_all(sys.argv[1], sys.argv[2], sys.argv[3]) 
 
 ##
-# Get number of all GADM admin levels from a country download.
-def get_gadm_adm_levels(gdf):
-    cols = gdf.columns.values.tolist()
-    gdf_gid = gdf[fnmatch.filter(cols, 'GID_*')].copy()
-    gdf_gid.dropna(axis=1, how='all', inplace=True)
-    # Last list element, Last character
-    last_populated_gid = gdf_gid.columns.values.tolist()[-1][-1]
-    print('\tMax Admin Level {0}'.format(last_populated_gid))
-    return last_populated_gid
-
-##
 #
 def transform_gadm_all(input_filename: str, schema_filename: str,
         output_dir: str):
 
     # Where running as Snakemake ensure it's in from the dir containing file
     config = parse_yaml('config.yml')
-    #config = parse_yaml('J:\git\datasources-etl\config.yml')
     GADM_FILENAME = 'gadm36_{ISO3}.gpkg'
     GADM_LAYER = 'gadm36_{ISO3}_{LVL}'
     iso = config['constants']['ISO3']
 
-    # Can also read from a zip file. Saves unzipping the source.
-    #gdf_aoi = gpd.read_file(input_filename)
-    gdf_aoi = gpd.read_file(f'zip://{input_filename}!{GADM_FILENAME.format(ISO3=iso)}')
-    adm_levels = get_gadm_adm_levels(gdf_aoi)
+    # NOTE. Currently assumes all layers in the GADM zip are ADM levels
+    zip_gpkg = f'zip://{input_filename}!{GADM_FILENAME.format(ISO3=iso)}'
+    adm_levels = len(fiona.listlayers(zip_gpkg))-1 # As ADM starts at 0
 
     # Process each levl. +1 as starts at 0.
     for lvl in range(0, int(adm_levels)+1):
@@ -89,7 +76,7 @@ def transform_gadm_all(input_filename: str, schema_filename: str,
 # 
 if __name__ == '__main__':
     # Example paths for local, direct testing outside of the snakemake env.
-    source = r'J:/git/datasources-etl/raw_data/YEM_GADM_ADM.zip'
+    source = r'J:/git/datasources-etl/raw_data/GTM_GADM_ADM.zip'
     schema = r'J:\git\datasources-etl\schemas\gadm_admin_py.yml'
     output_dir = r'J:\git\datasources-etl\processed_data'
     transform_gadm_all(source, schema, output_dir)
