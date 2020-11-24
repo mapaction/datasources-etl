@@ -35,8 +35,10 @@ def get_wfp_airports(output_airport_uri, iso3, wfp_airports_url):
         wfp_airports_url = get_wfp_airport_link()
 
     # Pull data from the API as a json lump
-    request = requests.get(wfp_airports_url)
-    json = request.json()
+    this_request = requests.get(wfp_airports_url)
+    logger.info("Status code: %s" % str(this_request.status_code))
+    logger.info("URL: %s" % wfp_airports_url)
+    json = this_request.json()
 
     # Loop through flows and append data to dataframe
     airports = json["features"]

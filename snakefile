@@ -267,13 +267,13 @@ rule extract_ourairports:
 
 rule extract_wfp_airports:
     params:
-        config['constants']['ISO3'],
-        config['wfp_airports']['url']
+        iso3=config['constants']['ISO3'],
+        url=config['wfp_airports']['url']
     output:
         os.path.join(
             config['dirs']['raw_data'], config['wfp_airports']['raw'])
     shell:
-        "extract_wfp_airports {output} {params}"
+        "extract_wfp_airports {output} \"{params.iso3}\" \"{params.url}\" "
 
 ##TRANSFORM
 ##Transform HDX COD
