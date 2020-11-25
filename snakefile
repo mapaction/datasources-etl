@@ -448,8 +448,9 @@ rule transform_roads_osm:
 rule transform_internal_boundaries:
     input:
         os.path.join(config['dirs']['processed_data']),
-        os.path.join(config['dirs']['schemas'], config['internalBnd']['schema'])
+        os.path.join(config['dirs']['schemas'], config['internalBnd']['schema']),
     params:
-        config['supplier']
+        config['constants']['ISO3'],
+        config['internalBnd']['supplier']
     shell:
         "transform_internal_boundaries {input} {params}"

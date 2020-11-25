@@ -23,7 +23,7 @@ from utils.yaml_api import parse_yaml
 # No idea how this set up enables passing of user defined parameters at the
 # commant prompt. Argparse in function.
 def adm_to_line_handler():
-    adm_to_line(sys.argv[1], sys.argv[2], sys.argv[3])
+    adm_to_line(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
 ##
 #
@@ -62,10 +62,10 @@ def make_new_rows(x):
 
 ## 
 #
-def adm_to_line(inputDir: str, schemaFile: str, supplier: str):
+def adm_to_line(inputDir: str, schemaFile: str, iso3: str, supplier: str):
     #config = parse_yaml(r'J:\git\datasources-etl\config.yml')
-    config = parse_yaml('config.yml') # relative to the root path, where
-                                      # snakemake is.
+    # config = parse_yaml('config.yml') # relative to the root path, where
+    #                                   # snakemake is.
 
     # Ensure user knows to pass 'supplier' param
     if supplier == 'None' or supplier is None:
@@ -87,7 +87,7 @@ def adm_to_line(inputDir: str, schemaFile: str, supplier: str):
     admShps = []
     for fName in files:
         if re.match(
-                rf".*{config['constants']['ISO3'].lower()}_admn_ad[1-9]_py_s[0-9]_{supplier}_pp.shp$",
+                rf".*{iso3.lower()}_admn_ad[1-9]_py_s[0-9]_{supplier}_pp.shp$",
                 fName, re.I):
             admShps.append(fName)
 
