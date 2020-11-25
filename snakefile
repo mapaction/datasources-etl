@@ -451,6 +451,6 @@ rule transform_internal_boundaries:
         os.path.join(config['dirs']['schemas'], config['internalBnd']['schema']),
     params:
         config['constants']['ISO3'],
-        config['internalBnd']['supplier']
+        config['supplier']
     shell:
         "transform_internal_boundaries {input} {params}"
