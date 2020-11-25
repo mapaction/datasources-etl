@@ -241,7 +241,7 @@ rule extract_srtm30:
         download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir']),
         config=config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['processed'])
     shell:
         "extract_srtm30 {output} {params}"
 
@@ -251,7 +251,7 @@ rule extract_srtm90:
         download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir']),
         config=config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['processed'])
     shell:
         "extract_srtm90 {output} {params}"
 
