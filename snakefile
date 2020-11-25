@@ -438,41 +438,45 @@ rule transform_internal_boundaries:
 # Transform SRTM -> make hillshade
 # still not sure how to employ (optional) keyword arguments into snakemake
 rule transform_srtm30_hsh_basic:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['processed'])
     params:
-        input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['processed']),
-        altitude_light_deg = config['constants']['altitude_light_deg'],
-        azimuth_light_deg = config['constants']['azimuth_light_deg']
+        config['constants']['altitude_light_deg'],
+        config['constants']['azimuth_light_deg']
     output:
         input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['basichillshade'])
     shell:
-        "transform_srtm30_hsh_basic {output} {params}"
+        "transform_srtm30_hsh_basic \"{output}\" \"{input}\"  {params}"
 
 rule transform_srtm30_hsh_pretty:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['processed'])
     params:
-        input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['processed']),
-        altitude_light_deg = config['constants']['altitude_light_deg'],
-        azimuth_light_deg = config['constants']['azimuth_light_deg']
+        config['constants']['altitude_light_deg'],
+        config['constants']['azimuth_light_deg']
     output:
         input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['prettyhillshade'])
     shell:
-        "transform_srtm30_hsh_basic {output} {params}"
+        "transform_srtm30_hsh_basic \"{output}\" \"{input}\"  {params}"
 
 rule transform_srtm90_hsh_basic:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['processed'])
     params:
-        input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['processed']),
-        altitude_light_deg = config['constants']['altitude_light_deg'],
-        azimuth_light_deg = config['constants']['azimuth_light_deg']
+        config['constants']['altitude_light_deg'],
+        config['constants']['azimuth_light_deg']
     output:
         input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['basichillshade'])
     shell:
-        "transform_srtm90_hsh_basic {output} {params}"
+        "transform_srtm90_hsh_basic \"{output}\" \"{input}\"  {params}"
 
 rule transform_srtm90_hsh_pretty:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['processed'])
     params:
-        input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['processed']),
-        altitude_light_deg = config['constants']['altitude_light_deg'],
-        azimuth_light_deg = config['constants']['azimuth_light_deg']
+        config['constants']['altitude_light_deg'],
+        config['constants']['azimuth_light_deg']
     output:
         input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['prettyhillshade'])
     shell:
-        "transform_srtm30_hsh_basic {output} {params}"
+        "transform_srtm30_hsh_basic \"{output}\" \"{input}\" {params}"
