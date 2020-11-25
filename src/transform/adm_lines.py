@@ -87,7 +87,7 @@ def adm_to_line(inputDir: str, schemaFile: str, supplier: str):
     admShps = []
     for fName in files:
         if re.match(
-                rf".*{config['constants']['ISO3']}_admn_ad[1-9]_py_s0_{supplier}_pp.shp$",
+                rf".*{config['constants']['ISO3'].lower()}_admn_ad[1-9]_py_s[0-9]_{supplier}_pp.shp$",
                 fName, re.I):
             admShps.append(fName)
 
