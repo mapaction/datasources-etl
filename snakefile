@@ -181,21 +181,6 @@ rule extract_osm_airports:
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
-rule extract_osm_seaports:
-    input:
-        os.path.join(
-            config['dirs']['schemas'], config['osm']['seaports']['osm_tags'])
-    params:
-        url=config['osm']['url'],
-        country=config['constants']['ISO2']
-    output:
-        os.path.join(
-            config['dirs']['raw_data'], config['osm']['seaports']['raw_osm']),
-        os.path.join(
-            config['dirs']['raw_data'], config['osm']['seaports']['raw_shp'])
-    shell:
-        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
-
 
 rule extract_osm_admin:
     input:
@@ -416,10 +401,10 @@ rule transform_roads_cod:
 
 rule transform_roads_osm:
     input:
-        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw']),
+        os.path.join(config['dirs']['raw_data'], config['osm']['roads']['raw_shp']),
         os.path.join(config['dirs']['schemas'], config['roads']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['roads']['osm']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['osm']['roads']['processed'])
     shell:
         "transform_roads_osm {input} {output}"
 

@@ -1,3 +1,7 @@
+required:
+    - name_en
+    - name_local
+    - fclass
 properties:
     geometry_type:
         items:

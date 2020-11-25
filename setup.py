@@ -42,6 +42,7 @@ setuptools.setup(
             # Roads
             'extract_roads_cod=extract.cod:get_roads_snakemake',
             'transform_roads_cod=transform.roads:transform_cod',
+            'transform_roads_osm=transform.roads:transform_osm'
         ]
     }
 )
