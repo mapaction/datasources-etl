@@ -140,17 +140,6 @@ def adm_to_line(inputDir: str, schemaFile: str, iso3: str, supplier: str):
         # not interested in point intersections
         df_new = df_new[~df_new.geometry.type.isin(['Point', 'MultiPoint'])]
 
-        # Second pass as ops.linemerge(x) can fail
-        # https://gis.stackexchange.com/questions/223447/weld-individual-line-segments-into-one-linestring-using-shapely
-        # Assumptions are that the line strings are generally correct.
-        df_new['geometry'] = df_new['geometry'].apply(
-            lambda x: shapely.geometry.LineString(
-                [i for sublist in [list(i.coords) for i in x] for i in sublist])
-            if x.geom_type == 'MultiLineString' 
-            else x)
-        # not interested in point intersections
-        df_new = df_new[~df_new.geometry.type.isin(['Point', 'MultiPoint'])]
-
         # now separate out MultiLineString features
         df_new = df_new.explode()
 
@@ -159,7 +148,7 @@ def adm_to_line(inputDir: str, schemaFile: str, iso3: str, supplier: str):
         df_new.crs = df_borders.crs
         # Make additional columns needed for validation
         df_new['geometry_type'] = df_new['geometry'].apply(lambda x: x.geom_type)
-        # Validate
+        # Validatetwo sec
         try:
             validate(instance=df_new.to_dict('list'), schema=parse_yaml(schemaFile))
         except Exception as err:
