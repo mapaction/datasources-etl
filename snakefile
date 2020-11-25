@@ -445,12 +445,11 @@ rule transform_roads_osm:
 
 
 # Obtain internal boundary lines from Admin polygons (Transform)
-# Adm1
 rule transform_internal_boundaries:
     input:
-        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm1']['processed']),
+        os.path.join(config['dirs']['processed_data']),
         os.path.join(config['dirs']['schemas'], config['internalBnd']['schema'])
-    output:
-        os.path.join(config['dirs']['processed_data'], config['internalBnd']['adm1']['processed'])
+    params:
+        config['supplier']
     shell:
-        "transform_internal_boundaries {input} {output}"
+        "transform_internal_boundaries {input} {params}"
