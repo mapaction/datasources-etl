@@ -68,7 +68,7 @@ def adm_to_line(inputDir: str, schemaFile: str, supplier: str):
                                       # snakemake is.
 
     # Ensure user knows to pass 'supplier' param
-    if supplier is None:
+    if supplier == 'None' or supplier is None:
         print('Please provide Supplier param')
         print("snakemake transform_internal_boundaries --config supplier='<supplier> --cores 1'")
         sys.exit(0)
