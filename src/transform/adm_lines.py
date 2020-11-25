@@ -122,6 +122,9 @@ def adm_to_line(inputDir: str, schemaFile: str, iso3: str, supplier: str):
         df_new.rename(columns={'name_local': 'name_2_loc'}, inplace=True)
         df_new.drop(['name_en'], axis=1, inplace=True)
 
+        # not interested in point intersections
+        df_new = df_new[~df_new.geometry.type.isin(['Point', 'MultiPoint'])]
+
         # NOTE. The process below can result in errors. This may be due to the
         # order in which a MultiLineString is defined. Checking for errors
         # (ie. Using ArcGIS Desktop - Check / Repair Geometry)
@@ -132,9 +135,11 @@ def adm_to_line(inputDir: str, schemaFile: str, iso3: str, supplier: str):
         # https://gis.stackexchange.com/questions/223447/weld-individual-line-segments-into-one-linestring-using-shapely
         df_new['geometry'] = df_new['geometry'].apply(
             lambda x: ops.linemerge(x)
-            if x.geom_type == 'MultiLineString' 
+            if x.geom_type == 'MultiLineString'
             else x)
-       
+        # not interested in point intersections
+        df_new = df_new[~df_new.geometry.type.isin(['Point', 'MultiPoint'])]
+
         # Second pass as ops.linemerge(x) can fail
         # https://gis.stackexchange.com/questions/223447/weld-individual-line-segments-into-one-linestring-using-shapely
         # Assumptions are that the line strings are generally correct.
@@ -143,13 +148,11 @@ def adm_to_line(inputDir: str, schemaFile: str, iso3: str, supplier: str):
                 [i for sublist in [list(i.coords) for i in x] for i in sublist])
             if x.geom_type == 'MultiLineString' 
             else x)
+        # not interested in point intersections
+        df_new = df_new[~df_new.geometry.type.isin(['Point', 'MultiPoint'])]
 
-        # Check the geom_types here. If anything other than MultiLineString
-        # then drop.
-        geomTypesL = list(df_new['geometry'].geom_type.unique())
-        geomTypesL.remove('LineString')
-        for nonLS in geomTypesL:
-            df_new.drop(df_new[df_new['geometry'].geom_type == nonLS].index, inplace=True)
+        # now separate out MultiLineString features
+        df_new = df_new.explode()
 
         # Define projection to be the same as the source - which should be
         # specified in the config.yml file. 
