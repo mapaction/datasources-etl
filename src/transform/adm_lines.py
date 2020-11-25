@@ -23,7 +23,7 @@ from utils.yaml_api import parse_yaml
 # No idea how this set up enables passing of user defined parameters at the
 # commant prompt. Argparse in function.
 def adm_to_line_handler():
-    adm_to_line(sys.argv[1], sys.argv[2], sys.argv[3])
+    adm_to_line(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
 ##
 #
@@ -62,10 +62,10 @@ def make_new_rows(x):
 
 ## 
 #
-def adm_to_line(inputDir: str, schemaFile: str, supplier: str):
+def adm_to_line(inputDir: str, schemaFile: str, iso3: str, supplier: str):
     #config = parse_yaml(r'J:\git\datasources-etl\config.yml')
-    config = parse_yaml('config.yml') # relative to the root path, where
-                                      # snakemake is.
+    # config = parse_yaml('config.yml') # relative to the root path, where
+    #                                   # snakemake is.
 
     # Ensure user knows to pass 'supplier' param
     if supplier == 'None' or supplier is None:
@@ -87,7 +87,7 @@ def adm_to_line(inputDir: str, schemaFile: str, supplier: str):
     admShps = []
     for fName in files:
         if re.match(
-                rf".*{config['constants']['ISO3'].lower()}_admn_ad[1-9]_py_s[0-9]_{supplier}_pp.shp$",
+                rf".*{iso3.lower()}_admn_ad[1-9]_py_s[0-9]_{supplier}_pp.shp$",
                 fName, re.I):
             admShps.append(fName)
 
@@ -122,6 +122,9 @@ def adm_to_line(inputDir: str, schemaFile: str, supplier: str):
         df_new.rename(columns={'name_local': 'name_2_loc'}, inplace=True)
         df_new.drop(['name_en'], axis=1, inplace=True)
 
+        # not interested in point intersections
+        df_new = df_new[~df_new.geometry.type.isin(['Point', 'MultiPoint'])]
+
         # NOTE. The process below can result in errors. This may be due to the
         # order in which a MultiLineString is defined. Checking for errors
         # (ie. Using ArcGIS Desktop - Check / Repair Geometry)
@@ -132,31 +135,20 @@ def adm_to_line(inputDir: str, schemaFile: str, supplier: str):
         # https://gis.stackexchange.com/questions/223447/weld-individual-line-segments-into-one-linestring-using-shapely
         df_new['geometry'] = df_new['geometry'].apply(
             lambda x: ops.linemerge(x)
-            if x.geom_type == 'MultiLineString' 
+            if x.geom_type == 'MultiLineString'
             else x)
-       
-        # Second pass as ops.linemerge(x) can fail
-        # https://gis.stackexchange.com/questions/223447/weld-individual-line-segments-into-one-linestring-using-shapely
-        # Assumptions are that the line strings are generally correct.
-        df_new['geometry'] = df_new['geometry'].apply(
-            lambda x: shapely.geometry.LineString(
-                [i for sublist in [list(i.coords) for i in x] for i in sublist])
-            if x.geom_type == 'MultiLineString' 
-            else x)
+        # not interested in point intersections
+        df_new = df_new[~df_new.geometry.type.isin(['Point', 'MultiPoint'])]
 
-        # Check the geom_types here. If anything other than MultiLineString
-        # then drop.
-        geomTypesL = list(df_new['geometry'].geom_type.unique())
-        geomTypesL.remove('LineString')
-        for nonLS in geomTypesL:
-            df_new.drop(df_new[df_new['geometry'].geom_type == nonLS].index, inplace=True)
+        # now separate out MultiLineString features
+        df_new = df_new.explode()
 
         # Define projection to be the same as the source - which should be
         # specified in the config.yml file. 
         df_new.crs = df_borders.crs
         # Make additional columns needed for validation
         df_new['geometry_type'] = df_new['geometry'].apply(lambda x: x.geom_type)
-        # Validate
+        # Validatetwo sec
         try:
             validate(instance=df_new.to_dict('list'), schema=parse_yaml(schemaFile))
         except Exception as err:
