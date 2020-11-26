@@ -240,6 +240,26 @@ rule extract_srtm90:
     shell:
         "extract_srtm90 {output} {params}"
 
+rule extract_ourairports:
+    params:
+        config['constants']['ISO3'],
+        config['ourairports']['url']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['ourairports']['raw'])
+    shell:
+        "extract_ourairports {output} {params}"
+
+rule extract_wfp_airports:
+    params:
+        iso3=config['constants']['ISO3'],
+        url=config['wfp_airports']['url']
+    output:
+        os.path.join(
+            config['dirs']['raw_data'], config['wfp_airports']['raw'])
+    shell:
+        "extract_wfp_airports {output} \"{params.iso3}\" \"{params.url}\" "
+
 ##TRANSFORM
 ##Transform HDX COD
 
@@ -446,12 +466,12 @@ rule transform_airports_osm:
 
 
 # Obtain internal boundary lines from Admin polygons (Transform)
-# Adm1
 rule transform_internal_boundaries:
     input:
-        os.path.join(config['dirs']['processed_data'], config['geoboundaries']['adm1']['processed']),
-        os.path.join(config['dirs']['schemas'], config['internalBnd']['schema'])
-    output:
-        os.path.join(config['dirs']['processed_data'], config['internalBnd']['adm1']['processed'])
+        os.path.join(config['dirs']['processed_data']),
+        os.path.join(config['dirs']['schemas'], config['internalBnd']['schema']),
+    params:
+        config['constants']['ISO3'],
+        config['supplier']
     shell:
-        "transform_internal_boundaries {input} {output}"
+        "transform_internal_boundaries {input} {params}"
