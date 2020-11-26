@@ -50,32 +50,32 @@ osm:
   lakes:
     osm_tags: 'osm_tags_lakes.yml'
     raw_osm: osm_lakes.xml
-    raw_shp: osm_lakes.gpkg
+    raw_gpkg: osm_lakes.gpkg
     processed: yem_phys_lak_py_s1_osm_pp.shp
   rivers:
     osm_tags: 'osm_tags_rivers.yml'
     raw_osm: osm_rivers.xml
-    raw_shp: osm_rivers.gpkg
+    raw_gpkg: osm_rivers.gpkg
     processed: yem_phys_riv_ln_s1_osm_pp.shp
   rail:
     osm_tags: 'osm_tags_rail.yml'
     raw_osm: osm_rail.xml
-    raw_shp: osm_rail.gpkg
+    raw_gpkg: osm_rail.gpkg
     processed: yem_trans_rrd_ln_s1_osm_pp.shp
   roads:
     osm_tags: 'osm_tags_roads.yml'
     raw_osm: osm_roads.xml
-    raw_shp: osm_roads.gpkg
+    raw_gpkg: osm_roads.gpkg
     processed: yem_tran_rds_ln_s1_osm_pp.shp
   airports:
     osm_tags: 'osm_tags_airports.yml'
     raw_osm: osm_airports.xml
-    raw_shp: osm_airports.gpkg
+    raw_gpkg: osm_airports.gpkg
     processed: yem_tran_air_pt_s1_osm_pp.shp
   admin:
     osm_tags: 'osm_tags_admin.yml'
     raw_osm: osm_admin.xml
-    raw_shp: osm_admin.gpkg
+    raw_gpkg: osm_admin.gpkg
 rivers:
   schema: rivers_affected_area_ln.yml
   cod:
