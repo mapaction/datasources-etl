@@ -26,7 +26,7 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
         schema_mapping = {
             'name_int': 'name_en',
             'name': 'name_loc',
-            'waterway': 'fclass'
+            'water': 'fclass'
             }
         # GDAL converts OSM to GPKG, tags are written as hstore key-value in attribute 'other_tags'
         # method to convert hstore string to dictionary from SqlAlchemy
