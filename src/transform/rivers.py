@@ -2,6 +2,7 @@ import sys
 import geopandas as gpd
 from utils.yaml_api import parse_yaml
 from jsonschema import validate
+from sqlalchemy.dialects.postgresql import HSTORE
 
 
 def transform_osm():
@@ -45,6 +46,7 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
                 if value not in df.columns:
                     df[value] = df['other_tags'].apply(lambda x: x.get(key) if type(x) == dict else x)
 
+
         # now remove columns which aren't in schema:
         schema_to_keep = list(schema_mapping.values())
         # add geometry to schema
@@ -65,4 +67,4 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     #### validate(instance=df.to_dict('list'), schema=parse_yaml(schema_filename))
 
     # Write to output
-    df.to_file(output_filename)
+    df.to_file(output_filename,encoding='utf8')

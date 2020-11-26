@@ -42,7 +42,11 @@ setuptools.setup(
             # Roads
             'extract_roads_cod=extract.cod:get_roads_snakemake',
             'transform_roads_cod=transform.roads:transform_cod',
-            'transform_roads_osm=transform.roads:transform_osm'
+            'transform_roads_osm=transform.roads:transform_osm',
+            'transform_lakes_osm=transform.lakes:transform_osm',
+            'transform_rivers_osm=transform.rivers:transform_osm',
+            'transform_rail_osm=transform.rail:transform_osm',
+            'transform_airports_osm=transform.airports:transform_osm',
         ]
     }
 )

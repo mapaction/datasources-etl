@@ -408,6 +408,42 @@ rule transform_roads_osm:
     shell:
         "transform_roads_osm {input} {output}"
 
+rule transform_lakes_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['osm']['lakes']['raw_shp']),
+        os.path.join(config['dirs']['schemas'], config['lakes']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['osm']['lakes']['processed'])
+    shell:
+        "transform_lakes_osm {input} {output}"
+
+rule transform_rivers_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['osm']['rivers']['raw_shp']),
+        os.path.join(config['dirs']['schemas'], config['rivers']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['osm']['rivers']['processed'])
+    shell:
+        "transform_rivers_osm {input} {output}"
+
+rule transform_rail_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['osm']['rail']['raw_shp']),
+        os.path.join(config['dirs']['schemas'], config['rail']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['osm']['rail']['processed'])
+    shell:
+        "transform_rail_osm {input} {output}"
+
+rule transform_airports_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['osm']['airports']['raw_shp']),
+        os.path.join(config['dirs']['schemas'], config['airports']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['osm']['airports']['processed'])
+    shell:
+        "transform_airports_osm {input} {output}"
+
 
 # Obtain internal boundary lines from Admin polygons (Transform)
 # Adm1

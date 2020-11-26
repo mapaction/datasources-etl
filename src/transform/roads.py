@@ -76,4 +76,4 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     # Validate
     ### validate(instance=df_roads.to_dict('list'), schema=parse_yaml(schema_filename))
     # Write to output
-    df_roads.to_file(output_filename)
+    df_roads.to_file(output_filename,encoding='utf8')

@@ -3,7 +3,7 @@ import requests
 import json
 
 from utils.yaml_api import parse_yaml
-from utils.osm import convert_osm2shape
+from utils.osm import convert_osm2gpkg
 from utils.requests_api import download_url
 
 def extract_osm_query():

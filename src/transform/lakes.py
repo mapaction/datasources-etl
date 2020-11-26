@@ -24,9 +24,9 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
         df = gpd.read_file(input_filename)
 
         schema_mapping = {
-            'name:en': 'name_en',
+            'name_int': 'name_en',
             'name': 'name_loc',
-            'highway': 'fclass'
+            'waterway': 'fclass'
             }
         # GDAL converts OSM to GPKG, tags are written as hstore key-value in attribute 'other_tags'
         # method to convert hstore string to dictionary from SqlAlchemy
@@ -60,4 +60,4 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
     # Validate
     ### validate(instance=df_roads.to_dict('list'), schema=parse_yaml(schema_filename))
     # Write to output
-    df.to_file(output_filename)
+    df.to_file(output_filename,encoding='utf8')

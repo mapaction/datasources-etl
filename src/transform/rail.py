@@ -1,7 +1,10 @@
 import sys
+
 import geopandas as gpd
 from jsonschema import validate
+
 from sqlalchemy.dialects.postgresql import HSTORE
+
 from utils.yaml_api import parse_yaml
 
 
@@ -23,7 +26,7 @@ def transform(source: str, input_filename: str, schema_filename: str, output_fil
         schema_mapping = {
             'name:en': 'name_en',
             'name': 'name_loc',
-            'aerodrome:type': 'fclass',
+            'highway': 'fclass'
             }
         # GDAL converts OSM to GPKG, tags are written as hstore key-value in attribute 'other_tags'
         # method to convert hstore string to dictionary from SqlAlchemy

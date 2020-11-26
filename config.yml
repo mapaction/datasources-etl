@@ -77,17 +77,17 @@ osm:
     raw_osm: osm_admin.xml
     raw_shp: osm_admin.gpkg
 rivers:
-  schema: rivers_affected_area_py.yml
+  schema: rivers_affected_area_ln.yml
   cod:
     raw: cod_rivers.zip
     processed: yem_phys_riv_ln_s1_unocha_pp.shp
 seaports:
-  schema: seaports_affected_area_py.yml
+  schema: seaports_affected_area_pt.yml
   cod:
     raw: cod_seaports.zip
     processed: yem_tran_por_pt_s1_unocha_pp.shp
 seaports_global:
-  schema: seaports_affected_area_py.yml
+  schema: seaports_affected_area_pt.yml
   cod:
     raw: cod_global_seaports.zip
     processed: yem_tran_por_pt_s1_worldportindex_pp.shp
@@ -127,7 +127,7 @@ geoboundaries:
     raw: 'geobnd_adm2.zip'
     processed: 'yem_admn_ad2_py_s0_geobnd_pp.shp'
 roads:
-  schema: roads_affected_area_py.yml
+  schema: roads_affected_area_ln.yml
   cod:
     raw: cod_roads.zip
     processed: yem_tran_rds_ln_s1_ocha_pp.shp
@@ -148,3 +148,11 @@ internalBnd:
   schema: 'admin1_internal_boundaries_ln.yml' 
   adm1: 
     processed: 'yem_admn_ad1_ln_s0_geobnd_pp.shp'
+lakes:
+  schema: lakes_affected_area_py.yml
+rail:
+  schema: rail_affected_area_ln.yml
+airports:
+  schema: airports_affected_area_pt.yml
+
+
