@@ -767,3 +767,6 @@ def pretty_hillshade_snakemake():
     calculate_multiscale_hillshade(sys.argv[1], sys.argv[2],
                                    altitude_deg=float(sys.argv[3]),
                                    azimuth_deg=float(sys.argv[4]))
+
+
+###############################################################################

@@ -457,7 +457,7 @@ rule transform_srtm30_hsh_pretty:
     output:
         input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['prettyhillshade'])
     shell:
-        "transform_srtm30_hsh_basic \"{output}\" \"{input}\"  {params}"
+        "transform_srtm30_hsh_pretty \"{output}\" \"{input}\"  {params}"
 
 rule transform_srtm90_hsh_basic:
     input:
@@ -479,4 +479,4 @@ rule transform_srtm90_hsh_pretty:
     output:
         input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['prettyhillshade'])
     shell:
-        "transform_srtm30_hsh_basic \"{output}\" \"{input}\" {params}"
+        "transform_srtm90_hsh_pretty \"{output}\" \"{input}\" {params}"
