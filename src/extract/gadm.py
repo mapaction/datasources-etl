@@ -59,8 +59,6 @@ def check_version(held_version, supplier):
         return False, None, None
 
 
-##
-#
 def get_world():
     config = parse_yaml('config.yml')
     rawdir = config['dirs']['raw_data']
