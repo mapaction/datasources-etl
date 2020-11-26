@@ -754,8 +754,8 @@ def basic_hillshade_snakemake():
     Note: deactivation of temporary file overwriting not instantiated.
     """
     get_basic_hillshade(sys.argv[1], sys.argv[2],
-                        altitude_deg=sys.argv[3],
-                        azimuth_deg=sys.argv[4])
+                        altitude_deg=float(sys.argv[3]),
+                        azimuth_deg=float(sys.argv[4]))
 
 
 ###############################################################################
@@ -765,7 +765,5 @@ def pretty_hillshade_snakemake():
     Note: deactivation of temporary file deletion not implemented here.
     """
     calculate_multiscale_hillshade(sys.argv[1], sys.argv[2],
-                                   altitude_deg=sys.argv[3],
-                                   azimuth_deg=sys.argv[4])
-
-
+                                   altitude_deg=float(sys.argv[3]),
+                                   azimuth_deg=float(sys.argv[4]))
