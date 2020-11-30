@@ -1,0 +1,52 @@
+snakemake extract_adm0_cod --cores 2
+snakemake extract_adm1_cod --cores 2
+snakemake extract_adm2_cod --cores 2
+snakemake extract_adm3_cod --cores 2
+snakemake extract_rivers_cod --cores 2
+snakemake extract_seaports_cod --cores 2
+snakemake extract_global_seaports_cod --cores 2
+snakemake extract_adm0_gadm --cores 2
+snakemake extract_adm1_gadm --cores 2
+snakemake extract_adm2_gadm --cores 2
+snakemake extract_gadm_adm --cores 2
+snakemake extract_world_gadm --cores 2
+snakemake extract_geoboundaries --cores 2
+snakemake extract_osm_rivers --cores 2
+snakemake extract_osm_lakes --cores 2
+snakemake extract_osm_rail --cores 2
+snakemake extract_osm_airports --cores 2
+snakemake extract_osm_seaports --cores 2
+snakemake extract_osm_admin --cores 2
+snakemake extract_osm_roads --cores 2
+snakemake extract_geoboundaries_adm0_all --cores 2
+snakemake extract_srtm30 --cores 2
+snakemake extract_srtm90 --cores 2
+snakemake transform_adm0_cod --cores 2
+snakemake transform_adm1_cod --cores 2
+snakemake transform_adm2_cod --cores 2
+snakemake transform_adm3_cod --cores 2
+snakemake transform_rivers_cod --cores 2
+snakemake transform_seaports_cod --cores 2
+snakemake transform_adm0_gadm --cores 2
+snakemake transform_adm1_gadm --cores 2
+snakemake transform_adm2_gadm --cores 2
+snakemake transform_surrounding_gadm --cores 2
+snakemake transform_gadm_adm --cores 2
+snakemake transform_adm0_geoboundaries --cores 2
+snakemake transform_adm1_geoboundaries --cores 2
+snakemake transform_adm2_geoboundaries --cores 2
+snakemake transform_surrounding_geoboundaries --cores 2
+snakemake extract_roads_cod --cores 2
+snakemake transform_roads_cod --cores 2
+snakemake transform_internal_boundaries --cores 2
+
+#TODO snakemake transform_roads_osm --cores 2
+#TODO snakemake transform_lakes_osm --cores 2
+#TODO snakemake transform_rivers_osm --cores 2
+#TODO snakemake transform_rail_osm --cores 2
+#TODO snakemake transform_airports_osm --cores 2
+
+#TODO snakemake transform_srtm30_hsh_basic --cores 2
+#TODO snakemake transform_srtm90_hsh_basic --cores 2
+#TODO snakemake transform_srtm30_hsh_pretty --cores 2
+#TODO snakemake transform_srtm90_hsh_pretty --cores 2

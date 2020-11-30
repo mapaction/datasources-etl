@@ -226,7 +226,7 @@ rule extract_srtm30:
         download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['dl_subdir']),
         config=config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm30']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['processed'])
     shell:
         "extract_srtm30 {output} {params}"
 
@@ -236,7 +236,7 @@ rule extract_srtm90:
         download_folder=os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['dl_subdir']),
         config=config['constants']['crs']
     output:
-        os.path.join(config['dirs']['raw_data'], config['srtm']['srtm90']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['processed'])
     shell:
         "extract_srtm90 {output} {params}"
 
@@ -474,4 +474,51 @@ rule transform_internal_boundaries:
         config['constants']['ISO3'],
         config['supplier']
     shell:
-        "transform_internal_boundaries {input} {params}"
+        "transform_internal_boundaries {input} {output}"
+
+# Transform SRTM -> make hillshade
+# still not sure how to employ (optional) keyword arguments into snakemake
+rule transform_srtm30_hsh_basic:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['processed'])
+    params:
+        config['constants']['altitude_light_deg'],
+        config['constants']['azimuth_light_deg']
+    output:
+        input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['basichillshade'])
+    shell:
+        "transform_srtm30_hsh_basic \"{output}\" \"{input}\"  {params}"
+
+rule transform_srtm30_hsh_pretty:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['processed'])
+    params:
+        config['constants']['altitude_light_deg'],
+        config['constants']['azimuth_light_deg']
+    output:
+        input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm30']['prettyhillshade'])
+    shell:
+        "transform_srtm30_hsh_pretty \"{output}\" \"{input}\"  {params}"
+
+rule transform_srtm90_hsh_basic:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['processed'])
+    params:
+        config['constants']['altitude_light_deg'],
+        config['constants']['azimuth_light_deg']
+    output:
+        input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['basichillshade'])
+    shell:
+        "transform_srtm90_hsh_basic \"{output}\" \"{input}\"  {params}"
+
+rule transform_srtm90_hsh_pretty:
+    input:
+        os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['processed'])
+    params:
+        config['constants']['altitude_light_deg'],
+        config['constants']['azimuth_light_deg']
+    output:
+        input_dem_uri = os.path.join(config['dirs']['processed_data'], config['srtm']['srtm90']['prettyhillshade'])
+    shell:
+        "transform_srtm90_hsh_pretty \"{output}\" \"{input}\" {params}"
+
