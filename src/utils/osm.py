@@ -3,6 +3,7 @@ import subprocess
 import ogr
 import gdal
 import geopandas as gpd
+from sqlalchemy.dialects.postgresql import HSTORE
 
 def convert_osm_to_gpkg(input_filename: str, tmp_filename: str, layer_name: str):
     tmp_filename = os.path.join('/', 'tmp', tmp_filename)
@@ -10,7 +11,15 @@ def convert_osm_to_gpkg(input_filename: str, tmp_filename: str, layer_name: str)
     subprocess.run(command.format(input=input_filename, output=tmp_filename), shell=True)
     return gpd.read_file(tmp_filename, layer='lines')
 
-def convert_osm2shape(in_file, out_file, geom_type='multipolygons'):
+def hstore2dict(str):
+    """ Return a python dictionary from a HSTORE data type.
+    This data is used by GDAL to store the key-value pairs
+    from the OSM XML into a single string attribute"""
+    hstore = HSTORE.result_processor(None,None,'string')
+    return hstore(str)
+
+
+def convert_osm2gpkg(in_file, out_file, geom_type='multipolygons'):
 
     """
     Translate an OSM .pbf or .xml file to a shape file
@@ -23,7 +32,7 @@ def convert_osm2shape(in_file, out_file, geom_type='multipolygons'):
         raise ValueError("Invalid geom_type. Expected one of: %s" % geom_types)
 
     # Set output geometry type for shapefile
-    out_driver = ogr.GetDriverByName('ESRI Shapefile')
+    out_driver = ogr.GetDriverByName('GPKG')
     gdal.SetConfigOption('OSM_USE_CUSTOM_INDEXING', 'NO')
     # Delete if previously exists
     if os.path.exists(out_file):

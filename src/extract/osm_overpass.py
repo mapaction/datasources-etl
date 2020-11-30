@@ -3,7 +3,7 @@ import requests
 import json
 
 from utils.yaml_api import parse_yaml
-from utils.osm import convert_osm2shape
+from utils.osm import convert_osm2gpkg
 from utils.requests_api import download_url
 
 def extract_osm_query():
@@ -12,9 +12,9 @@ def extract_osm_query():
     osm_schema = parse_yaml(sys.argv[3]) #parse_yaml('schemas/osm_tags_lakes.yml')
     geom_type = parse_yaml(sys.argv[3])['geom_type']
     osm_output_file = sys.argv[4] #'raw_data/osm_rivers_pol.xml'
-    shp_output_file = sys.argv[5] #'raw_data/osm_rivers_pol.xml'
+    gpkg_output_file = sys.argv[5] #'raw_data/osm_rivers_pol.gpkg'
     get_osm_xml(osm_url, osm_query(osm_schema, country), osm_output_file)
-    convert_osm2shape(osm_output_file,shp_output_file,geom_type)
+    convert_osm2gpkg(osm_output_file,gpkg_output_file,geom_type)
 
 def osm_query(osm_yml: dict, iso2_country: str):
     """ Country based query using Overpass Query Language.  Using key value pairs,

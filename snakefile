@@ -132,7 +132,7 @@ rule extract_osm_rivers:
         os.path.join(
             config['dirs']['raw_data'], config['osm']['rivers']['raw_osm']),
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['rivers']['raw_shp'])
+            config['dirs']['raw_data'], config['osm']['rivers']['raw_gpkg'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -147,7 +147,7 @@ rule extract_osm_lakes:
         os.path.join(
             config['dirs']['raw_data'], config['osm']['lakes']['raw_osm']),
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['lakes']['raw_shp'])
+            config['dirs']['raw_data'], config['osm']['lakes']['raw_gpkg'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -162,7 +162,7 @@ rule extract_osm_rail:
         os.path.join(
             config['dirs']['raw_data'], config['osm']['rail']['raw_osm']),
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['rail']['raw_shp'])
+            config['dirs']['raw_data'], config['osm']['rail']['raw_gpkg'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -177,22 +177,7 @@ rule extract_osm_airports:
         os.path.join(
             config['dirs']['raw_data'], config['osm']['airports']['raw_osm']),
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['airports']['raw_shp'])
-    shell:
-        "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
-
-rule extract_osm_seaports:
-    input:
-        os.path.join(
-            config['dirs']['schemas'], config['osm']['seaports']['osm_tags'])
-    params:
-        url=config['osm']['url'],
-        country=config['constants']['ISO2']
-    output:
-        os.path.join(
-            config['dirs']['raw_data'], config['osm']['seaports']['raw_osm']),
-        os.path.join(
-            config['dirs']['raw_data'], config['osm']['seaports']['raw_shp'])
+            config['dirs']['raw_data'], config['osm']['airports']['raw_gpkg'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -208,7 +193,7 @@ rule extract_osm_admin:
         os.path.join(
             config['dirs']['raw_data'], config['osm']['admin']['raw_osm']),
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['admin']['raw_shp'])
+            config['dirs']['raw_data'], config['osm']['admin']['raw_gpkg'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -223,7 +208,7 @@ rule extract_osm_roads:
         os.path.join(
             config['dirs']['raw_data'], config['osm']['roads']['raw_osm']),
         os.path.join(
-            config['dirs']['raw_data'], config['osm']['roads']['raw_shp'])
+            config['dirs']['raw_data'], config['osm']['roads']['raw_gpkg'])
     shell:
         "extract_osm \"{params.url}\" \"{params.country}\" {input} {output}"
 
@@ -436,12 +421,48 @@ rule transform_roads_cod:
 
 rule transform_roads_osm:
     input:
-        os.path.join(config['dirs']['raw_data'], config['roads']['osm']['raw']),
+        os.path.join(config['dirs']['raw_data'], config['osm']['roads']['raw_gpkg']),
         os.path.join(config['dirs']['schemas'], config['roads']['schema'])
     output:
-        os.path.join(config['dirs']['processed_data'], config['roads']['osm']['processed'])
+        os.path.join(config['dirs']['processed_data'], config['osm']['roads']['processed'])
     shell:
         "transform_roads_osm {input} {output}"
+
+rule transform_lakes_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['osm']['lakes']['raw_gpkg']),
+        os.path.join(config['dirs']['schemas'], config['lakes']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['osm']['lakes']['processed'])
+    shell:
+        "transform_lakes_osm {input} {output}"
+
+rule transform_rivers_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['osm']['rivers']['raw_gpkg']),
+        os.path.join(config['dirs']['schemas'], config['rivers']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['osm']['rivers']['processed'])
+    shell:
+        "transform_rivers_osm {input} {output}"
+
+rule transform_rail_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['osm']['rail']['raw_gpkg']),
+        os.path.join(config['dirs']['schemas'], config['rail']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['osm']['rail']['processed'])
+    shell:
+        "transform_rail_osm {input} {output}"
+
+rule transform_airports_osm:
+    input:
+        os.path.join(config['dirs']['raw_data'], config['osm']['airports']['raw_gpkg']),
+        os.path.join(config['dirs']['schemas'], config['airports']['schema'])
+    output:
+        os.path.join(config['dirs']['processed_data'], config['osm']['airports']['processed'])
+    shell:
+        "transform_airports_osm {input} {output}"
 
 
 # Obtain internal boundary lines from Admin polygons (Transform)
