@@ -52,53 +52,44 @@ osm:
   lakes:
     osm_tags: 'osm_tags_lakes.yml'
     raw_osm: osm_lakes.xml
-    raw_shp: osm_lakes.shp
+    raw_gpkg: osm_lakes.gpkg
     processed: yem_phys_lak_py_s1_osm_pp.shp
   rivers:
     osm_tags: 'osm_tags_rivers.yml'
     raw_osm: osm_rivers.xml
-    raw_shp: osm_rivers.shp
+    raw_gpkg: osm_rivers.gpkg
     processed: yem_phys_riv_ln_s1_osm_pp.shp
   rail:
     osm_tags: 'osm_tags_rail.yml'
     raw_osm: osm_rail.xml
-    raw_shp: osm_rail.shp
+    raw_gpkg: osm_rail.gpkg
     processed: yem_trans_rrd_ln_s1_osm_pp.shp
   roads:
     osm_tags: 'osm_tags_roads.yml'
     raw_osm: osm_roads.xml
-    raw_shp: osm_roads.shp
+    raw_gpkg: osm_roads.gpkg
     processed: yem_tran_rds_ln_s1_osm_pp.shp
   airports:
     osm_tags: 'osm_tags_airports.yml'
     raw_osm: osm_airports.xml
-    raw_shp: osm_airports.shp
+    raw_gpkg: osm_airports.gpkg
     processed: yem_tran_air_pt_s1_osm_pp.shp
-  seaports:
-    osm_tags: 'osm_tags_seaports.yml'
-    raw_osm: osm_seaports.xml
-    raw_shp: osm_seaports.shp
-    processed: yem_tran_por_pt_s1_osm_pp.shp
   admin:
     osm_tags: 'osm_tags_admin.yml'
     raw_osm: osm_admin.xml
-    raw_shp: osm_admin.shp
-  coastline:
-    osm_tags: 'osm_tags_coast.yml'
-    raw: osm_coast.xml
-    processed: yem_phys_cst_ln_s1_osm_pp.shp
+    raw_gpkg: osm_admin.gpkg
 rivers:
-  schema: rivers_affected_area_py.yml
+  schema: rivers_affected_area_ln.yml
   cod:
     raw: cod_rivers.zip
     processed: yem_phys_riv_ln_s1_unocha_pp.shp
 seaports:
-  schema: seaports_affected_area_py.yml
+  schema: seaports_affected_area_pt.yml
   cod:
     raw: cod_seaports.zip
     processed: yem_tran_por_pt_s1_unocha_pp.shp
 seaports_global:
-  schema: seaports_affected_area_py.yml
+  schema: seaports_affected_area_pt.yml
   cod:
     raw: cod_global_seaports.zip
     processed: yem_tran_por_pt_s1_worldportindex_pp.shp
@@ -138,7 +129,7 @@ geoboundaries:
     raw: 'geobnd_adm2.zip'
     processed: 'yem_admn_ad2_py_s0_geobnd_pp.shp'
 roads:
-  schema: roads_affected_area_py.yml
+  schema: roads_affected_area_ln.yml
   cod:
     raw: cod_roads.zip
     processed: yem_tran_rds_ln_s1_ocha_pp.shp
@@ -173,4 +164,10 @@ internalBnd:
   schema: 'admin_internal_boundaries_ln.yml' 
   adm1: 
     processed: 'yem_admn_ad1_ln_s0_geobnd_pp.shp'
+lakes:
+  schema: lakes_affected_area_py.yml
+rail:
+  schema: rail_affected_area_ln.yml
+airports:
+  schema: airports_affected_area_pt.yml
 supplier:
