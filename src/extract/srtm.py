@@ -3,6 +3,7 @@ import sys
 import logging
 import zipfile
 import glob
+import getpass
 import numpy as np
 import geopandas as gpd
 import rasterio
@@ -29,12 +30,10 @@ def get_earthdata_login_credentials():
     Tuple of (username, password) for logging into NASA EarthData. Ideally,
     this will be handled somewhere more secure!
     """
-    # TODO: put username and password somewhere secure!
-    username = "mapaction"
-    password = "Mapping1066"
+    username = input("Earth Data username: ")
+    password = getpass.getpass("Earth Data password: ")
 
     return tuple([username, password])
-
 
 ###############################################################################
 def get_srtm90_root_url():
